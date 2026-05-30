@@ -27,6 +27,7 @@ import { useUIStore } from "../lib/store";
 import { toastErr } from "../lib/errors";
 import { filterVisible } from "../lib/hiddenModels";
 import { Search, Users, MessageCircle, X, Cpu, Wrench, Shield, Plus, Loader2, Pause, Play, Clock, Brain, Zap, FlaskConical, Trash2, Copy, RotateCcw, Pencil, Bot, Database, FileText, MoreHorizontal, Sparkles, ChevronDown, Check } from "lucide-react";
+import { buildModelConfigPatch, MODEL_MAX_TOKENS_DEFAULT, MODEL_TEMPERATURE_DEFAULT } from "../lib/agentModelPatch";
 import { truncateId } from "../lib/string";
 import { pickLatestSessionId } from "../lib/sessionSelector";
 import { getStatusVariant } from "../lib/status";
@@ -286,8 +287,8 @@ export function AgentsPage() {
     setModelDraft({
       provider: detailAgent?.model?.provider ?? "",
       model: detailAgent?.model?.model ?? "",
-      max_tokens: String(detailAgent?.model?.max_tokens ?? 4096),
-      temperature: String(detailAgent?.model?.temperature ?? 0.7),
+      max_tokens: String(detailAgent?.model?.max_tokens ?? MODEL_MAX_TOKENS_DEFAULT),
+      temperature: String(detailAgent?.model?.temperature ?? MODEL_TEMPERATURE_DEFAULT),
     });
     setEditingModel(true);
   }
@@ -421,27 +422,13 @@ export function AgentsPage() {
 
   function saveModelEdit() {
     if (!detailAgent) return;
-    const current = detailAgent.model;
-    const patch: { max_tokens?: number; model?: string; provider?: string; temperature?: number } = {};
-
-    const trimmedProvider = modelDraft.provider.trim();
-    const trimmedModel = modelDraft.model.trim();
-    const parsedMaxTokens = parseInt(modelDraft.max_tokens, 10);
-    const parsedTemperature = parseFloat(modelDraft.temperature);
-
-    if (!trimmedProvider || !trimmedModel) return;
-    if (isNaN(parsedMaxTokens) || parsedMaxTokens <= 0) return;
-    if (isNaN(parsedTemperature) || parsedTemperature < 0 || parsedTemperature > 2) return;
-
-    const modelChanged = trimmedModel !== current?.model;
-    const providerChanged = trimmedProvider !== current?.provider;
-
-    if (modelChanged || providerChanged) {
-      patch.model = trimmedModel;
-      patch.provider = trimmedProvider;
-    }
-    if (parsedMaxTokens !== current?.max_tokens) patch.max_tokens = parsedMaxTokens;
-    if (parsedTemperature !== current?.temperature) patch.temperature = parsedTemperature;
+    // buildModelConfigPatch validates the draft and includes a field only when
+    // the user changed it from its persisted (nullish-defaulted) value, using
+    // the same 4096 / 0.7 baseline as the modelDirty gate so the two can't drift
+    // (the #5917 follow-up: a provider-only edit must not write back defaults
+    // for max_tokens / temperature the backend had omitted).
+    const { patch } = buildModelConfigPatch(modelDraft, detailAgent.model);
+    if (!patch) return;
 
     if (Object.keys(patch).length === 0) {
       setEditingModel(false);
@@ -702,6 +689,22 @@ export function AgentsPage() {
     [modelsQuery.data?.models, hiddenSet],
   );
 
+  // Single-model providers (e.g. a self-hosted Unsloth Studio endpoint that
+  // serves exactly one model) used to leave the Save button stuck disabled:
+  // switching provider clears modelDraft.model, and with only one option the
+  // user has nothing else to pick to repopulate it, so the !model.trim()
+  // validity gate never released. Auto-select the sole model so changing the
+  // provider (or any other field) is enough to enable Save. See #5917.
+  useEffect(() => {
+    if (!editingModel) return;
+    if (!modelDraft.provider.trim()) return;
+    if (modelsQuery.isLoading || modelDraft.model.trim()) return;
+    if (visibleModels.length === 1) {
+      const only = visibleModels[0].id;
+      setModelDraft(d => (d.model ? d : { ...d, model: only }));
+    }
+  }, [editingModel, modelDraft.provider, modelDraft.model, modelsQuery.isLoading, visibleModels]);
+
   const agents = agentsQuery.data?.agents ?? [];
   const visibleAgents = useMemo(
     () => showHandAgents ? agents : agents.filter(a => !a.is_hand),
@@ -755,15 +758,30 @@ export function AgentsPage() {
   const activeConfigMutation = detailAgent?.is_hand
     ? patchHandAgentRuntimeConfigMutation
     : patchAgentConfigMutation;
+  // Save enables when the draft is both valid AND differs from the persisted
+  // model in any field — Provider, Model, Max tokens, or Temperature. Earlier
+  // this gate checked validity only; combined with the provider-switch model
+  // reset that produced the #5917 symptom where Max-token / Temperature edits
+  // never lit Save. draftMaxTokens / draftTemperature mirror saveModelEdit's
+  // coercion so the dirty comparison matches what would actually be PATCHed.
+  const draftMaxTokens = parseInt(modelDraft.max_tokens, 10);
+  const draftTemperature = parseFloat(modelDraft.temperature);
+  const modelValid =
+    !!modelDraft.provider.trim()
+    && !!modelDraft.model.trim()
+    && !isNaN(draftMaxTokens)
+    && draftMaxTokens > 0
+    && !isNaN(draftTemperature)
+    && draftTemperature >= 0
+    && draftTemperature <= 2;
+  const currentModel = detailAgent?.model;
+  const modelDirty =
+    modelDraft.provider.trim() !== (currentModel?.provider ?? "")
+    || modelDraft.model.trim() !== (currentModel?.model ?? "")
+    || draftMaxTokens !== (currentModel?.max_tokens ?? MODEL_MAX_TOKENS_DEFAULT)
+    || draftTemperature !== (currentModel?.temperature ?? MODEL_TEMPERATURE_DEFAULT);
   const saveModelDisabled =
-    activeConfigMutation.isPending
-    || !modelDraft.provider.trim()
-    || !modelDraft.model.trim()
-    || isNaN(parseInt(modelDraft.max_tokens, 10))
-    || parseInt(modelDraft.max_tokens, 10) <= 0
-    || isNaN(parseFloat(modelDraft.temperature))
-    || parseFloat(modelDraft.temperature) < 0
-    || parseFloat(modelDraft.temperature) > 2;
+    activeConfigMutation.isPending || !modelValid || !modelDirty;
 
   const selectAgent = async (agent: AgentItem) => {
     setAgentTab("conversation");
