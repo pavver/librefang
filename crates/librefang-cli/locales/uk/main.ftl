@@ -803,3 +803,57 @@ doctor-section-daemon-health =
 doctor-check-daemon-mcp-status = MCP-сервери: { $configured } налаштовано, { $connected } підключено
 doctor-check-daemon-mcp-health = Здоров'я MCP-серверів: { $healthy }/{ $total } здорових
 
+doctor-suggest-groq = https://console.groq.com       (безкоштовно, швидко)
+doctor-suggest-gemini = https://aistudio.google.com    (безкоштовний тариф)
+doctor-suggest-deepseek = https://platform.deepseek.com  (дешево)
+
+desktop-install-launched = Десктопний додаток запущено.
+desktop-install-launch-fail = Не вдалося запустити { $path }: { $error }
+desktop-install-launch-fail-generic = Не вдалося запустити десктопний додаток: { $error }
+desktop-install-not-installed = LibreFang Desktop не встановлено.
+desktop-install-prompt =   Завантажити та встановити зараз? [Y/n] 
+desktop-install-skipped = Пропущено. Ви можете встановити його пізніше:
+desktop-install-skipped-brew =   brew install --cask librefang   (macOS)
+desktop-install-skipped-manual =   Або завантажте з https://github.com/librefang/librefang/releases
+desktop-install-fetching = Отримання інформації про останній реліз...
+desktop-install-unsupported = Непідтримувана платформа для автоматичного встановлення десктопної версії.
+desktop-install-download-manual = Завантажте вручну: https://github.com/librefang/librefang/releases
+desktop-install-github-fail = Не вдалося зв'язатися з GitHub: { $error }
+desktop-install-parse-fail = Не вдалося розібрати інформацію про реліз: { $error }
+desktop-install-kv-asset = Ресурс
+desktop-install-downloading = Завантаження...
+desktop-install-download-fail = Завантаження не вдалося: { $error }
+desktop-install-download-complete = Завантаження завершено.
+desktop-install-installing = Встановлення...
+desktop-install-success = LibreFang Desktop успішно встановлено.
+desktop-install-fail = Помилка встановлення: { $error }
+desktop-install-running-installer = Запуск інсталятора...
+
+doctor-audit-vault-key-unset = LIBREFANG_VAULT_KEY не встановлено — шифрування сховища вимкнено.
+doctor-audit-vault-key-invalid-base64 = LIBREFANG_VAULT_KEY не є коректним base64: { $error }
+doctor-audit-vault-key-invalid-base64-hint = Згенеруйте його за допомогою: openssl rand -base64 32
+doctor-audit-vault-key-wrong-length = LIBREFANG_VAULT_KEY розкодовується в { $count } байтів; має бути рівно 32. Зверніть увагу, що 32 ASCII символи НЕ дорівнюють 32 байтам після декодування base64.
+doctor-audit-vault-key-wrong-length-hint = Згенеруйте новий 32-байтний ключ: openssl rand -base64 32 (результат матиме 44 символи)
+doctor-audit-vault-key-ok = LIBREFANG_VAULT_KEY успішно розкодовується в 32 байти.
+
+doctor-audit-api-listen-no-config = config.toml не знайдено — пропуск перевірки api_listen.
+doctor-audit-api-listen-invalid-toml = config.toml не є коректним TOML: { $error }
+doctor-audit-api-listen-invalid-toml-hint = Відредагуйте ~/.librefang/config.toml або запустіть `librefang doctor --repair`.
+doctor-audit-api-listen-unset = api_listen не встановлено в конфігурації — ядро використовуватиме значення за замовчуванням.
+doctor-audit-api-listen-invalid-addr = api_listen `{ $address }` не є коректною сокет-адресою: { $error }
+doctor-audit-api-listen-invalid-addr-hint = Використовуйте форму `хост:порт`, наприклад `127.0.0.1:4545` або `[::1]:4545`.
+doctor-audit-api-listen-port-zero = api_listen `{ $address }` використовує порт 0 (тимчасовий, призначений ОС); клієнти не зможуть визначити URL-адресу демона після прив'язки.
+doctor-audit-api-listen-port-zero-hint = Оберіть явний порт (за замовчуванням 4545), наприклад `127.0.0.1:4545`.
+doctor-audit-api-listen-privileged = Порт api_listen { $port } є привілейованим (<1024); демон не зможе прив'язатися без прав root.
+doctor-audit-api-listen-privileged-hint = Використовуйте порт >= 1024 (за замовчуванням 4545), якщо вам не потрібні права root навмисно.
+doctor-audit-api-listen-ok = api_listen `{ $address }` успішно розібрано.
+
+doctor-audit-config-not-found = { $path } не існує.
+doctor-audit-config-not-found-hint = Запустіть `librefang init`, щоб створити конфігурацію за замовчуванням.
+doctor-audit-config-read-fail = Не вдалося прочитати { $path }: { $error }
+doctor-audit-config-ok = { $path } успішно розбирається як TOML.
+doctor-audit-config-syntax-error = { $path } містить синтаксичні помилки TOML: { $error }
+doctor-audit-config-syntax-error-hint = Відредагуйте { $path } або відновіть її з бекапу.
+
+
+

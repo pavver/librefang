@@ -803,3 +803,57 @@ doctor-section-daemon-health =
 doctor-check-daemon-mcp-status = MCP servers: { $configured } configured, { $connected } connected
 doctor-check-daemon-mcp-health = MCP server health: { $healthy }/{ $total } healthy
 
+doctor-suggest-groq = https://console.groq.com       (free, fast)
+doctor-suggest-gemini = https://aistudio.google.com    (free tier)
+doctor-suggest-deepseek = https://platform.deepseek.com  (low cost)
+
+desktop-install-launched = Desktop app launched.
+desktop-install-launch-fail = Failed to launch { $path }: { $error }
+desktop-install-launch-fail-generic = Failed to launch desktop app: { $error }
+desktop-install-not-installed = LibreFang Desktop is not installed.
+desktop-install-prompt =   Download and install it now? [Y/n] 
+desktop-install-skipped = Skipped. You can install it later:
+desktop-install-skipped-brew =   brew install --cask librefang   (macOS)
+desktop-install-skipped-manual =   Or download from https://github.com/librefang/librefang/releases
+desktop-install-fetching = Fetching latest release info...
+desktop-install-unsupported = Unsupported platform for automatic desktop install.
+desktop-install-download-manual = Download manually: https://github.com/librefang/librefang/releases
+desktop-install-github-fail = Failed to reach GitHub: { $error }
+desktop-install-parse-fail = Failed to parse release info: { $error }
+desktop-install-kv-asset = Asset
+desktop-install-downloading = Downloading...
+desktop-install-download-fail = Download failed: { $error }
+desktop-install-download-complete = Download complete.
+desktop-install-installing = Installing...
+desktop-install-success = LibreFang Desktop installed successfully.
+desktop-install-fail = Installation failed: { $error }
+desktop-install-running-installer = Running installer...
+
+doctor-audit-vault-key-unset = LIBREFANG_VAULT_KEY not set — vault encryption disabled.
+doctor-audit-vault-key-invalid-base64 = LIBREFANG_VAULT_KEY is not valid base64: { $error }
+doctor-audit-vault-key-invalid-base64-hint = Generate one with: openssl rand -base64 32
+doctor-audit-vault-key-wrong-length = LIBREFANG_VAULT_KEY decodes to { $count } bytes; must be exactly 32. Note that 32 ASCII characters is NOT 32 bytes after base64 decode.
+doctor-audit-vault-key-wrong-length-hint = Generate a fresh 32-byte key: openssl rand -base64 32 (44-char output)
+doctor-audit-vault-key-ok = LIBREFANG_VAULT_KEY decodes to 32 bytes.
+
+doctor-audit-api-listen-no-config = config.toml not found — skipping api_listen check.
+doctor-audit-api-listen-invalid-toml = config.toml is not valid TOML: { $error }
+doctor-audit-api-listen-invalid-toml-hint = Edit ~/.librefang/config.toml or run `librefang doctor --repair`.
+doctor-audit-api-listen-unset = api_listen not set in config — kernel will use the default.
+doctor-audit-api-listen-invalid-addr = api_listen `{ $address }` is not a valid socket address: { $error }
+doctor-audit-api-listen-invalid-addr-hint = Use `host:port` form, e.g. `127.0.0.1:4545` or `[::1]:4545`.
+doctor-audit-api-listen-port-zero = api_listen `{ $address }` uses port 0 (OS-assigned ephemeral); clients can't discover the daemon URL after bind.
+doctor-audit-api-listen-port-zero-hint = Pick an explicit port (default 4545), e.g. `127.0.0.1:4545`.
+doctor-audit-api-listen-privileged = api_listen port { $port } is privileged (<1024); daemon will fail to bind without root.
+doctor-audit-api-listen-privileged-hint = Use a port >= 1024 (default 4545) unless you intentionally need root.
+doctor-audit-api-listen-ok = api_listen `{ $address }` parses cleanly.
+
+doctor-audit-config-not-found = { $path } does not exist.
+doctor-audit-config-not-found-hint = Run `librefang init` to create a default config.
+doctor-audit-config-read-fail = Failed to read { $path }: { $error }
+doctor-audit-config-ok = { $path } parses as TOML.
+doctor-audit-config-syntax-error = { $path } has TOML syntax errors: { $error }
+doctor-audit-config-syntax-error-hint = Edit { $path } or restore from a backup.
+
+
+

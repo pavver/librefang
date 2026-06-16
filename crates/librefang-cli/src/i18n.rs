@@ -73,24 +73,32 @@ pub fn init(language: &str) {
 
 pub fn t(key: &str) -> String {
     I18N.with(|cell| {
-        cell.borrow()
-            .as_ref()
-            .map(|i18n| i18n.get(key, None))
-            .unwrap_or_else(|| format!("[{key}]"))
+        let mut borrow = cell.borrow_mut();
+        if borrow.is_none() {
+            let i18n = I18n::new(DEFAULT_LANGUAGE).unwrap_or_else(|error| {
+                panic!("failed to initialize default i18n fallback: {error}");
+            });
+            *borrow = Some(i18n);
+        }
+        borrow.as_ref().unwrap().get(key, None)
     })
 }
 
 pub fn t_args(key: &str, args: &[(&str, &str)]) -> String {
     I18N.with(|cell| {
-        if let Some(i18n) = cell.borrow().as_ref() {
-            let mut fluent_args = FluentArgs::new();
-            for (name, value) in args {
-                fluent_args.set(*name, FluentValue::from(*value));
-            }
-            i18n.get(key, Some(&fluent_args))
-        } else {
-            format!("[{key}]")
+        let mut borrow = cell.borrow_mut();
+        if borrow.is_none() {
+            let i18n = I18n::new(DEFAULT_LANGUAGE).unwrap_or_else(|error| {
+                panic!("failed to initialize default i18n fallback: {error}");
+            });
+            *borrow = Some(i18n);
         }
+        let i18n = borrow.as_ref().unwrap();
+        let mut fluent_args = FluentArgs::new();
+        for (name, value) in args {
+            fluent_args.set(*name, FluentValue::from(*value));
+        }
+        i18n.get(key, Some(&fluent_args))
     })
 }
 

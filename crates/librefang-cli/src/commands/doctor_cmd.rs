@@ -455,9 +455,9 @@ pub(crate) fn cmd_doctor(json: bool, repair: bool) {
             ui::check_fail(&i18n::t("doctor-no-api-keys"));
             ui::blank();
             ui::section(&i18n::t("section-getting-api-key"));
-            ui::suggest_cmd("Groq:", "https://console.groq.com       (free, fast)");
-            ui::suggest_cmd("Gemini:", "https://aistudio.google.com    (free tier)");
-            ui::suggest_cmd("DeepSeek:", "https://platform.deepseek.com  (low cost)");
+            ui::suggest_cmd("Groq:", &i18n::t("doctor-suggest-groq"));
+            ui::suggest_cmd("Gemini:", &i18n::t("doctor-suggest-gemini"));
+            ui::suggest_cmd("DeepSeek:", &i18n::t("doctor-suggest-deepseek"));
             ui::blank();
             ui::hint(&i18n::t("hint-set-key"));
         }
