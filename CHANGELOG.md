@@ -892,6 +892,10 @@ In-crate only; no cross-crate error-shape changes.
 
 ### Added
 
+- **dashboard(agents): edit the system prompt and bind a prompt-library version from the agent detail drawer** (#6187) (@houko).
+  The Agents page previously showed the system prompt read-only and the "Prompts" modal's activate only flipped the store's active flag without changing the live prompt; the Hands page already had a full editor (#6151 / #6166), leaving the two pages inconsistent.
+  `SystemPromptSection` is now an inline editor: edit and save via `PATCH /api/agents/{id}`, or open the prompt library and bind a saved version via `useBindPromptVersionToAgent` (which hot-swaps the live `system_prompt` and flips `is_active` together).
+  Dashboard-only — the backend `update_system_prompt` path is unchanged; i18n added to en/zh/uk and the editor is covered by a new `AgentsPage.test.tsx`. Closes #6187.
 - **observability: `librefang_tool_call_total` now carries an `agent` label** (#6226) (@houko).
   The counter added in #3495 was labeled only by `tool` and `outcome`, so tool failures could not be attributed per-agent.
   It is now `librefang_tool_call_total{agent, tool, outcome}`, mirroring the existing per-agent `librefang_cron_fires_total{agent}` precedent.
