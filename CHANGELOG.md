@@ -1011,6 +1011,9 @@ In-crate only; no cross-crate error-shape changes.
 
 ### Fixed
 
+- **fix(sec): wrap `EmbeddingConfig.api_key` in `Zeroizing<String>` to ensure credential zeroization on drop** (@mrchn).
+  The embedding config struct held the API key as a plain `String`, which stayed in memory after deallocation.
+  Wrapping in `Zeroizing<String>` ensures the key is zeroed on drop, consistent with how the internal driver structs already stored it.
 - **fix(hands): saving one Hand setting no longer drops the others** (#6204) (@houko).
   The Hand settings editor PUTs only the keys changed this session, but `update_hand_settings` passed that partial map straight to `HandRegistry::update_config`, which replaces the whole instance config — so for a Hand with several settings, saving one reverted every other to its default.
   The route now reads the instance's current config and merges the incoming keys over it (a true partial update; the registry's replace contract is unchanged), and the editor also seeds its payload from the saved values as defense in depth.
