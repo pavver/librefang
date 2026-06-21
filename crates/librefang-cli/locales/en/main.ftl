@@ -11,7 +11,6 @@ daemon-stopped-forced = Daemon stopped (forced)
 daemon-error = Daemon error: { $error }
 daemon-already-running = Daemon already running at { $url }
 daemon-already-running-fix = Use `librefang status` to check it, or stop it first
-daemon-not-running = Daemon is not running.
 daemon-not-running-start = Daemon is not running. Start it with: librefang start
 daemon-no-running-found = No running daemon found
 daemon-no-running-found-fix = Is it running? Check with: librefang status
@@ -100,23 +99,15 @@ guide-help-select = ↑↓ navigate  Enter select  s/Esc skip
 guide-help-paste = Paste key + Enter  Esc back
 guide-help-wait = Please wait...
 guide-paste-key-hint = Copy the API key from the browser and paste it below.
-hint-could-not-open-browser = Could not open a browser automatically.
 hint-could-not-open-browser-visit = Could not open browser. Visit: { $url }
-hint-dashboard-url = Dashboard: { $url }
-hint-try-dashboard = Try: librefang dashboard
-hint-install-desktop = Install it with: cargo install librefang-desktop
-hint-fallback-web-dashboard = Falling back to web dashboard...
-hint-then-open-dashboard = Then open: http://127.0.0.1:4545
 hint-chat-with-agent = Chat: librefang chat { $name }
 hint-agent-lost-on-exit = Note: Agent will be lost when this process exits
 hint-persistent-agents = For persistent agents, use `librefang start` first
 hint-url-copied = URL copied to clipboard
 hint-doctor-repair = Run `librefang doctor --repair` to attempt auto-fix
-hint-run-init = Run `librefang init` to set up the agents directory
 hint-run-start = Run `librefang start` to launch the daemon
 hint-config-edit = Fix with: librefang config edit
 hint-set-key = Or run: librefang config set-key groq
-hint-set-key-provider = Set later: librefang config set-key email (or export EMAIL_PASSWORD=...)
 
 # --- Init ---
 init-quick-success = LibreFang initialized (quick mode)
@@ -159,14 +150,9 @@ error-require-daemon-fix = Start the daemon: librefang start
 
 # --- Provider detection ---
 detected-provider = Detected { $display } ({ $env_var })
-detected-gemini = Detected Gemini (GOOGLE_API_KEY)
 detected-ollama = Detected Ollama running locally (no API key needed)
 
 # --- Desktop app ---
-desktop-launching = Launching LibreFang Desktop...
-desktop-started = Desktop app started.
-desktop-launch-fail = Failed to launch desktop app: { $error }
-desktop-not-found = Desktop app not found.
 
 # --- Dashboard ---
 dashboard-opening = Opening dashboard at { $url }
@@ -176,19 +162,9 @@ agent-spawned = Agent '{ $name }' spawned
 agent-spawned-inprocess = Agent '{ $name }' spawned (in-process)
 agent-spawn-failed = Failed to spawn: { $error }
 agent-spawn-agent-failed = Failed to spawn agent: { $error }
-agent-template-not-found = Template '{ $name }' not found
-agent-template-not-found-fix = Run `librefang agent new` to see available templates
-agent-no-templates = No agent templates found
-agent-no-templates-fix = Run `librefang init` to set up the agents directory
-agent-template-parse-fail = Failed to parse template '{ $name }': { $error }
-agent-template-parse-fail-fix = The template manifest may be corrupted
 agent-killed = Agent { $id } killed.
 agent-kill-failed = Failed to kill agent: { $error }
 agent-invalid-id = Invalid agent ID: { $id }
-agent-model-set = Agent { $id } model set to { $value }.
-agent-set-model-failed = Failed to set model: { $error }
-agent-no-daemon-for-set = No running daemon found. Start one with: librefang start
-agent-unknown-field = Unknown field: { $field }. Supported fields: model
 agent-no-agents = No agents running.
 agent-spawn-success = Agent spawned successfully!
 agent-spawn-inprocess-mode = Agent spawned (in-process mode).
@@ -200,7 +176,6 @@ section-agent-templates = Available Agent Templates
 manifest-not-found = Manifest file not found: { $path }
 manifest-not-found-fix = Use `librefang agent new` to spawn from a template instead
 error-reading-manifest = Error reading manifest: { $error }
-error-parsing-manifest = Error parsing manifest: { $error }
 
 # --- Status ---
 section-daemon-status = LibreFang Daemon Status
@@ -212,7 +187,6 @@ label-home = Home
 label-platform = Platform
 label-sessions = Sessions
 label-memory = Memory
-label-started = Started
 label-running = running
 label-response = Response
 label-checks = Checks
@@ -232,7 +206,6 @@ label-config-warnings = Config warnings
 auth-none = none (anonymous)
 auth-api-key = API key
 auth-dashboard-login = dashboard login
-auth-user-keys = { $count } user key(s)
 
 # --- Doctor ---
 doctor-title = LibreFang Doctor
@@ -264,20 +237,6 @@ health-ok = Daemon is healthy
 health-not-running = Daemon is not running.
 
 # --- Channel setup ---
-section-channel-setup = Channel Setup
-channel-configured = { $name } configured
-channel-no-token = No token provided. Setup cancelled.
-channel-no-email = No email provided. Setup cancelled.
-channel-token-saved = Token saved to ~/.librefang/.env
-channel-app-token-saved = App token saved to ~/.librefang/.env
-channel-bot-token-saved = Bot token saved to ~/.librefang/.env
-channel-password-saved = Password saved to ~/.librefang/.env
-channel-phone-saved = Phone saved to ~/.librefang/.env
-channel-key-saved = { $key } saved to ~/.librefang/.env
-channel-unknown = Unknown channel: { $name }
-channel-unknown-fix = Available: discord, slack, whatsapp, email, signal, matrix
-channel-test-ok = Channel test passed
-channel-test-fail = Channel test failed
 channel-none-configured = No channels configured.
 channel-use-setup-hint = Use `librefang channel setup` to add one.
 channel-reloaded = Channels reloaded ({ $started } sidecar(s) started).
@@ -316,13 +275,6 @@ channel-hot-reloaded-daemon =   Hot-reloaded daemon.
 channel-reload-status-warn =   Reload returned { $status }: change will apply on next daemon restart.
 channel-reload-contact-fail-warn =   Could not contact daemon for reload ({ $error }); change will apply on next start.
 channel-reload-daemon-offline =   Daemon not running; change will apply on next start.
-section-setup-discord = Setting up Discord
-section-setup-slack = Setting up Slack
-section-setup-whatsapp = Setting up WhatsApp
-section-setup-email = Setting up Email
-section-setup-signal = Setting up Signal
-section-setup-matrix = Setting up Matrix
-
 # --- Vault ---
 vault-initialized = Credential vault initialized.
 vault-not-initialized = Vault not initialized.
@@ -405,7 +357,6 @@ label-header-prompt = PROMPT
 # --- Approvals ---
 approval-responded = Approval { $id } { $action }d.
 approval-failed = Failed to { $action } approval: { $error }
-approval-no-pending = No pending approvals.
 
 # --- Memory ---
 memory-set = Set { $key } for agent '{ $agent }'.
@@ -438,8 +389,6 @@ model-prompt-selection =   Enter number or model ID:
 
 
 # --- Config ---
-config-set-success = Config value set.
-config-unset-success = Config key removed.
 config-no-file = No config file found
 config-no-file-fix = Run `librefang init` first
 config-read-failed = Failed to read config: { $error }
@@ -486,7 +435,6 @@ hand-paused = Hand instance '{ $label } (instance: { $instance_id })' paused.
 hand-resumed = Hand instance '{ $label } (instance: { $instance_id })' resumed.
 
 # --- Daemon notify ---
-daemon-restart-notify = Restart the daemon to apply: librefang restart
 
 # --- System info ---
 section-system-info = LibreFang System Info
@@ -522,7 +470,6 @@ reset-fail = Failed to remove { $path }: { $error }
 
 # --- Logs ---
 log-following = --- Following { $path } (Ctrl+C to stop) ---
-log-path-hint = Log file: { $path }
 
 # --- Extracted from Rust sources ---
 init-error-create-data-dir = Error creating data dir: { $error }
@@ -708,8 +655,6 @@ hand-no-settings = Hand '{ $id }' has no configurable settings.
 hand-settings-title = Settings for '{ $id }'
 hand-set-setting-success = Set { $key }={ $value } for hand '{ $id }'.
 hand-reloaded-summary = Reloaded hands: { $added } added, { $updated } updated, { $total } total.
-hand-chat-welcome = Chat with { $name } (type /quit to exit)
-
 # mcp_cmds.rs
 mcp-catalog-unknown-entry = Unknown MCP catalog entry: '{ $name }'
 mcp-catalog-available-header =
@@ -752,10 +697,6 @@ monitoring-daemon-running-error = daemon is running at { $url }; refusing to tou
 monitoring-daemon-running-error-fix = stop the daemon first: `librefang stop`
 monitoring-anchor-remove-failed = failed to remove anchor { $path }: { $error }
 monitoring-audit-reset-seed-fresh = The next daemon boot will seed a fresh Merkle chain from the current tip.
-monitoring-memory-no-entries = No memory entries for agent '{ $agent }'.
-monitoring-devices-none-paired = No paired devices.
-monitoring-webhooks-none-configured = No webhooks configured.
-
 # skill.rs
 skill-install-progress = Installing { $source }
 
@@ -925,7 +866,6 @@ doctor-section-config-val =
 doctor-section-skills = 
 
   Skills:
-doctor-check-skills-injection-critical-warn = Skill '{ $name }' has { $count } critical warning(s):
 doctor-check-skills-injection-warn = Prompt injection warning in skill: { $name }
 doctor-section-mcp-servers =
   MCP servers:
@@ -1405,7 +1345,6 @@ tui-mod-extension-reconnected = Reconnected { $id }: { $tools } tools
 tui-mod-no-agents-running = No agents running.
 tui-mod-agent-killed = Agent "{ $name }" killed.
 tui-mod-failed-kill-agent = Failed to kill agent "{ $name }".
-tui-mod-missing-api-key = Missing API key
 tui-mod-invalid-manifest = Invalid manifest: { $error }
 tui-mod-spawn-failed = Spawn failed: { $error }
 tui-mod-help-help = /help         — show this help
@@ -1877,7 +1816,6 @@ tui-init-routing-opt-yes-desc = pick 3 models (fast / balanced / frontier)
 tui-init-routing-opt-no = No
 tui-init-routing-opt-no-desc = use one model for everything
 tui-init-routing-hints =   [↑↓] Navigate  [Enter] Select  [Esc] Back
-tui-init-routing-pick-title =   Pick { $tier } model ({ $step }/3):
 tui-init-routing-pick-hints =   [↑↓/jk] Navigate  [Enter] Select  [Esc] Back
 tui-init-routing-tier-fast = Fast
 tui-init-routing-tier-balanced = Balanced
@@ -2186,9 +2124,6 @@ tui-wizard-status-no-home = Could not determine home directory
 tui-wizard-status-saved = Config saved — { $provider } / { $model }
 tui-wizard-status-save-fail = Failed to save config: { $error }
 tui-wizard-status-continuing = Continuing...
-
-
-
 
 
 

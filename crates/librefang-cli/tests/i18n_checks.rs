@@ -677,6 +677,174 @@ fn get_line_at_index(content: &str, index: usize) -> String {
     content[start..end].trim().to_string()
 }
 
+fn collect_rust_string_literals(content: &str) -> Vec<String> {
+    let mut literals = Vec::new();
+    let mut chars = content.char_indices().peekable();
+    let mut current = String::new();
+    let mut in_quote = false;
+    let mut in_line_comment = false;
+    let mut in_block_comment = false;
+
+    while let Some((idx, c)) = chars.next() {
+        if c == '\n' {
+            in_line_comment = false;
+        }
+
+        if in_line_comment {
+            continue;
+        }
+
+        if in_block_comment {
+            if c == '*' && chars.peek().map(|&(_, next_c)| next_c) == Some('/') {
+                chars.next();
+                in_block_comment = false;
+            }
+            continue;
+        }
+
+        if !in_quote {
+            if c == '\'' {
+                let mut temp_chars = chars.clone();
+                let mut consume_count = 0;
+                let mut parsed_char_literal = false;
+
+                if let Some((_, first)) = temp_chars.next() {
+                    consume_count += 1;
+                    if first == '\\' {
+                        if temp_chars.next().is_some() {
+                            consume_count += 1;
+                        }
+                    }
+                    if let Some((_, '\'')) = temp_chars.next() {
+                        consume_count += 1;
+                        parsed_char_literal = true;
+                    }
+                }
+
+                if parsed_char_literal {
+                    for _ in 0..consume_count {
+                        chars.next();
+                    }
+                    continue;
+                }
+            }
+
+            if c == '/' && chars.peek().map(|&(_, next_c)| next_c) == Some('/') {
+                chars.next();
+                in_line_comment = true;
+                continue;
+            }
+            if c == '/' && chars.peek().map(|&(_, next_c)| next_c) == Some('*') {
+                chars.next();
+                in_block_comment = true;
+                continue;
+            }
+
+            // Skip Rust raw string literals. i18n keys should be plain literals
+            // passed to `i18n::t`/`t_args` or stored in key arrays.
+            let prev_char_is_ident = idx > 0 && {
+                let prev = content.as_bytes()[idx - 1] as char;
+                prev.is_alphanumeric() || prev == '_'
+            };
+            if c == 'r' && !prev_char_is_ident {
+                let remaining = &content[idx..];
+                if remaining.starts_with("r\"") {
+                    chars.next();
+                    while let Some((_, rc)) = chars.next() {
+                        if rc == '"' {
+                            break;
+                        }
+                    }
+                    continue;
+                }
+                if remaining.starts_with("r#") {
+                    let mut hashes = 0;
+                    let mut temp_chars = chars.clone();
+                    while let Some((_, hc)) = temp_chars.next() {
+                        if hc == '#' {
+                            hashes += 1;
+                        } else if hc == '"' {
+                            break;
+                        } else {
+                            hashes = 0;
+                            break;
+                        }
+                    }
+                    if hashes > 0 {
+                        for _ in 0..hashes + 1 {
+                            chars.next();
+                        }
+                        let end_pattern = format!("\"{}", "#".repeat(hashes));
+                        while let Some((inner_idx, rc)) = chars.next() {
+                            if rc == '"' && content[inner_idx..].starts_with(&end_pattern) {
+                                for _ in 0..hashes {
+                                    chars.next();
+                                }
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if c == '"' {
+            if in_quote {
+                literals.push(current.clone());
+                current.clear();
+                in_quote = false;
+            } else {
+                in_quote = true;
+            }
+            continue;
+        }
+
+        if in_quote {
+            if c == '\\' {
+                if let Some((_, next_c)) = chars.next() {
+                    current.push(next_c);
+                }
+            } else {
+                current.push(c);
+            }
+        }
+    }
+
+    literals
+}
+
+fn collect_locale_keys(locale_file: &Path) -> Vec<String> {
+    let content = fs::read_to_string(locale_file).unwrap();
+    content
+        .lines()
+        .filter_map(|line| {
+            if line.starts_with(char::is_whitespace) || line.trim_start().starts_with('#') {
+                return None;
+            }
+
+            let (key, _) = line.split_once('=')?;
+            let key = key.trim();
+            let mut chars = key.chars();
+            if !chars.next().is_some_and(|c| c.is_ascii_alphabetic()) {
+                return None;
+            }
+            if chars.all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_') {
+                Some(key.to_string())
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
+fn is_dynamic_i18n_key(key: &str) -> bool {
+    (key.starts_with("tui-templates-name-") || key.starts_with("tui-templates-desc-"))
+        || (key.starts_with("tui-triggers-type-")
+            && (key.ends_with("-name") || key.ends_with("-desc")))
+        || key.starts_with("tui-skills-sort-")
+}
+
 #[test]
 fn test_no_untranslated_strings() {
     let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is set");
@@ -716,6 +884,51 @@ fn test_no_untranslated_strings() {
         panic!(
             "Found untranslated user-facing strings in CLI commands:\n{}",
             violations.join("\n")
+        );
+    }
+}
+
+#[test]
+fn test_no_dead_locale_keys() {
+    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is set");
+    let manifest_dir = Path::new(&manifest_dir);
+    let src_dir = manifest_dir.join("src");
+    let locales_dir = manifest_dir.join("locales");
+
+    let mut used_literals = std::collections::BTreeSet::new();
+    for entry in WalkDir::new(&src_dir) {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        if path.is_file() && path.extension().is_some_and(|ext| ext == "rs") {
+            let content = fs::read_to_string(path).unwrap();
+            used_literals.extend(collect_rust_string_literals(&content));
+        }
+    }
+
+    let mut dead_keys = Vec::new();
+    for entry in fs::read_dir(&locales_dir).unwrap() {
+        let entry = entry.unwrap();
+        let locale_dir = entry.path();
+        if !locale_dir.is_dir() {
+            continue;
+        }
+        let locale_file = locale_dir.join("main.ftl");
+        if !locale_file.is_file() {
+            continue;
+        }
+
+        let locale = locale_dir.file_name().unwrap().to_string_lossy();
+        for key in collect_locale_keys(&locale_file) {
+            if !used_literals.contains(&key) && !is_dynamic_i18n_key(&key) {
+                dead_keys.push(format!("{locale}/{key}"));
+            }
+        }
+    }
+
+    if !dead_keys.is_empty() {
+        panic!(
+            "Found locale keys that are not referenced by CLI Rust code:\n{}",
+            dead_keys.join("\n")
         );
     }
 }

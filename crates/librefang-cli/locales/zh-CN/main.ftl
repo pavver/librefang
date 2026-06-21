@@ -11,7 +11,6 @@ daemon-stopped-forced = 守护进程已停止（强制）
 daemon-error = 守护进程错误：{ $error }
 daemon-already-running = 守护进程已在 { $url } 运行
 daemon-already-running-fix = 使用 `librefang status` 检查状态，或先停止它
-daemon-not-running = 守护进程未运行。
 daemon-not-running-start = 守护进程未运行。请使用以下命令启动：librefang start
 daemon-no-running-found = 未找到运行中的守护进程
 daemon-no-running-found-fix = 是否在运行？请检查：librefang status
@@ -88,23 +87,15 @@ guide-help-select = ↑↓ 导航  Enter 选择  s/Esc 跳过
 guide-help-paste = 粘贴密钥 + Enter 确认  Esc 返回
 guide-help-wait = 请稍候...
 guide-paste-key-hint = 从浏览器复制 API 密钥，然后粘贴到下方。
-hint-could-not-open-browser = 无法自动打开浏览器。
 hint-could-not-open-browser-visit = 无法打开浏览器。请访问：{ $url }
-hint-dashboard-url = 控制台：{ $url }
-hint-try-dashboard = 请尝试：librefang dashboard
-hint-install-desktop = 请使用以下命令安装：cargo install librefang-desktop
-hint-fallback-web-dashboard = 回退到网页控制台...
-hint-then-open-dashboard = 然后打开：http://127.0.0.1:4545
 hint-chat-with-agent = 聊天：librefang chat { $name }
 hint-agent-lost-on-exit = 注意：此进程退出后智能体将丢失
 hint-persistent-agents = 如需持久化智能体，请先运行 `librefang start`
 hint-url-copied = URL 已复制到剪贴板
 hint-doctor-repair = 运行 `librefang doctor --repair` 尝试自动修复
-hint-run-init = 运行 `librefang init` 设置智能体目录
 hint-run-start = 运行 `librefang start` 启动守护进程
 hint-config-edit = 修复方法：librefang config edit
 hint-set-key = 或运行：librefang config set-key groq
-hint-set-key-provider = 稍后设置：librefang config set-key email（或 export EMAIL_PASSWORD=...）
 
 # --- Init ---
 init-quick-success = LibreFang 已初始化（快速模式）
@@ -147,14 +138,9 @@ error-require-daemon-fix = 启动守护进程：librefang start
 
 # --- Provider detection ---
 detected-provider = 检测到 { $display }（{ $env_var }）
-detected-gemini = 检测到 Gemini（GOOGLE_API_KEY）
 detected-ollama = 检测到本地运行的 Ollama（无需 API 密钥）
 
 # --- Desktop app ---
-desktop-launching = 正在启动 LibreFang 桌面应用...
-desktop-started = 桌面应用已启动。
-desktop-launch-fail = 启动桌面应用失败：{ $error }
-desktop-not-found = 未找到桌面应用。
 
 # --- Dashboard ---
 dashboard-opening = 正在打开控制台 { $url }
@@ -164,19 +150,9 @@ agent-spawned = 智能体 '{ $name }' 已创建
 agent-spawned-inprocess = 智能体 '{ $name }' 已创建（进程内模式）
 agent-spawn-failed = 创建失败：{ $error }
 agent-spawn-agent-failed = 创建智能体失败：{ $error }
-agent-template-not-found = 未找到模板 '{ $name }'
-agent-template-not-found-fix = 运行 `librefang agent new` 查看可用模板
-agent-no-templates = 未找到智能体模板
-agent-no-templates-fix = 运行 `librefang init` 设置智能体目录
-agent-template-parse-fail = 解析模板 '{ $name }' 失败：{ $error }
-agent-template-parse-fail-fix = 模板清单文件可能已损坏
 agent-killed = 智能体 { $id } 已终止。
 agent-kill-failed = 终止智能体失败：{ $error }
 agent-invalid-id = 无效的智能体 ID：{ $id }
-agent-model-set = 智能体 { $id } 模型已设置为 { $value }。
-agent-set-model-failed = 设置模型失败：{ $error }
-agent-no-daemon-for-set = 未找到运行中的守护进程。请使用以下命令启动：librefang start
-agent-unknown-field = 未知字段：{ $field }。支持的字段：model
 agent-no-agents = 没有运行中的智能体。
 agent-spawn-success = 智能体创建成功！
 agent-spawn-inprocess-mode = 智能体已创建（进程内模式）。
@@ -188,7 +164,6 @@ section-agent-templates = 可用智能体模板
 manifest-not-found = 未找到清单文件：{ $path }
 manifest-not-found-fix = 请使用 `librefang agent new` 从模板创建
 error-reading-manifest = 读取清单错误：{ $error }
-error-parsing-manifest = 解析清单错误：{ $error }
 
 # --- Status ---
 section-daemon-status = LibreFang 守护进程状态
@@ -200,7 +175,6 @@ label-home = 主目录
 label-platform = 平台
 label-sessions = 会话
 label-memory = 内存
-label-started = 启动时间
 label-response = 响应延迟
 label-checks = 检查
 section-status-locked = 受限信息（需要 API 密钥）
@@ -219,7 +193,6 @@ label-config-warnings = 配置警告
 auth-none = 无（匿名）
 auth-api-key = API 密钥
 auth-dashboard-login = 控制台登录
-auth-user-keys = { $count } 个用户密钥
 
 # --- Doctor ---
 doctor-title = LibreFang 诊断
@@ -251,27 +224,6 @@ health-ok = 守护进程运行正常
 health-not-running = 守护进程未运行。
 
 # --- Channel setup ---
-section-channel-setup = 通道设置
-channel-configured = { $name } 已配置
-channel-no-token = 未提供令牌。设置已取消。
-channel-no-email = 未提供邮箱。设置已取消。
-channel-token-saved = 令牌已保存至 ~/.librefang/.env
-channel-app-token-saved = 应用令牌已保存至 ~/.librefang/.env
-channel-bot-token-saved = 机器人令牌已保存至 ~/.librefang/.env
-channel-password-saved = 密码已保存至 ~/.librefang/.env
-channel-phone-saved = 手机号已保存至 ~/.librefang/.env
-channel-key-saved = { $key } 已保存至 ~/.librefang/.env
-channel-unknown = 未知通道：{ $name }
-channel-unknown-fix = 可用通道：discord、slack、whatsapp、email、signal、matrix
-channel-test-ok = 通道测试通过
-channel-test-fail = 通道测试失败
-section-setup-discord = 设置 Discord
-section-setup-slack = 设置 Slack
-section-setup-whatsapp = 设置 WhatsApp
-section-setup-email = 设置邮箱
-section-setup-signal = 设置 Signal
-section-setup-matrix = 设置 Matrix
-
 # --- Vault ---
 vault-initialized = 凭据保险库已初始化。
 vault-not-initialized = 保险库未初始化。
@@ -337,8 +289,6 @@ section-select-model = 选择模型
 model-out-of-range = 数字超出范围（1-{ $max }）
 
 # --- Config ---
-config-set-success = 配置值已设置。
-config-unset-success = 配置键已移除。
 config-no-file = 未找到配置文件
 config-no-file-fix = 请先运行 `librefang init`
 config-read-failed = 读取配置失败：{ $error }
@@ -370,7 +320,6 @@ hand-paused = Hand 实例 '{ $id }' 已暂停。
 hand-resumed = Hand 实例 '{ $id }' 已恢复。
 
 # --- Daemon notify ---
-daemon-restart-notify = 重启守护进程以应用更改：librefang restart
 
 # --- System info ---
 section-system-info = LibreFang 系统信息
@@ -398,7 +347,6 @@ reset-fail = 移除 { $path } 失败：{ $error }
 
 # --- Logs ---
 log-following = --- 正在跟踪 { $path }（Ctrl+C 停止）---
-log-path-hint = 日志文件：{ $path }
 
 # --- Brand/proper names ---
 brand-openai = OpenAI
@@ -597,7 +545,6 @@ tui-mod-extension-reconnected = 已重新连接 { $id }: { $tools } 个工具
 tui-mod-no-agents-running = 无正在运行的智能体。
 tui-mod-agent-killed = 智能体 "{ $name }" 已终止。
 tui-mod-failed-kill-agent = 终止智能体 "{ $name }" 失败。
-tui-mod-missing-api-key = 缺少 API 密钥
 tui-mod-invalid-manifest = 无效的清单: { $error }
 tui-mod-spawn-failed = 生成失败: { $error }
 tui-mod-help-help = /help         — 显示此帮助信息
@@ -1001,7 +948,7 @@ tui-init-migrate-openclaw-agents = { $count } 个 Agent ({ $names })
 tui-init-migrate-openclaw-no-agents = 无 Agent
 tui-init-migrate-openclaw-channels = { $count } 个通道 ({ $names })
 tui-init-migrate-openclaw-no-channels = 无通道
-ui-init-migrate-openclaw-skills = { $count } 个 Skill
+tui-init-migrate-openclaw-skills = { $count } 个 Skill
 tui-init-migrate-openclaw-no-skills = 无 Skill
 tui-init-migrate-openclaw-memory = 内存文件
 tui-init-migrate-openclaw-no-memory = 无内存文件
@@ -1057,7 +1004,6 @@ tui-init-routing-opt-yes-desc = 选择 3 个模型 (快速 / 平衡 / 前沿)
 tui-init-routing-opt-no = 否
 tui-init-routing-opt-no-desc = 所有任务使用单一模型
 tui-init-routing-hints =   [↑↓] 导航  [Enter] 选择  [Esc] 返回
-tui-init-routing-pick-title =   选择 { $tier } 模型 ({ $step }/3):
 tui-init-routing-pick-hints =   [↑↓/jk] 导航  [Enter] 选择  [Esc] 返回
 tui-init-routing-tier-fast = 快速
 tui-init-routing-tier-balanced = 平衡
@@ -1366,9 +1312,6 @@ tui-wizard-status-no-home = 无法确定主目录
 tui-wizard-status-saved = 配置已保存 — { $provider } / { $model }
 tui-wizard-status-save-fail = 保存配置失败: { $error }
 tui-wizard-status-continuing = 正在继续...
-
-
-
 
 
 
