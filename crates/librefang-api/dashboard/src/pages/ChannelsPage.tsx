@@ -584,7 +584,7 @@ function SidecarForm({
           disabled={saveMut.isPending || schemaUnavailable}
         >
           {saveMut.isPending
-            ? t("common.saving", { defaultValue: "Saving…" })
+            ? t("common.saving", { defaultValue: "Saving..." })
             : t("common.save", { defaultValue: "Save" })}
         </Button>
       </div>
@@ -738,7 +738,7 @@ export function ChannelsPage() {
               disabled={unconfiguredCount === 0}
               title={unconfiguredCount === 0
                 ? t("channels.all_configured", { defaultValue: "All channels configured" })
-                : t("channels.add", { defaultValue: "Add channel" })}
+                : t("channels.add_channel", { defaultValue: "Add channel" })}
             >
               {t("channels.add", { defaultValue: "Add" })}
             </Button>
@@ -927,7 +927,7 @@ export function ChannelsPage() {
             <div className="rounded-md border border-border-subtle bg-main/40 p-4 text-[12px] text-text-dim italic">
               {pickerSearch
                 ? t("channels.no_results")
-                : t("channels.all_configured", { defaultValue: "All available channel types are already configured." })}
+                : t("channels.all_configured_desc", { defaultValue: "All available channel types are already configured." })}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

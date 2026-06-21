@@ -22,6 +22,10 @@ type UsedKey = {
   line: number;
 };
 
+type DefaultedKey = UsedKey & {
+  defaultValue: string;
+};
+
 type DynamicKeyPattern = {
   pattern: RegExp;
   source: string;
@@ -33,7 +37,7 @@ type I18nUsage = {
   keys: UsedKey[];
   looseKeys: UsedKey[];
   dynamicPatterns: DynamicKeyPattern[];
-  defaultedKeys: UsedKey[];
+  defaultedKeys: DefaultedKey[];
 };
 
 let usageCache: I18nUsage | null = null;
@@ -115,7 +119,7 @@ function collectI18nUsage(): I18nUsage {
   const keys: UsedKey[] = [];
   const looseKeys: UsedKey[] = [];
   const dynamicPatterns: DynamicKeyPattern[] = [];
-  const defaultedKeys: UsedKey[] = [];
+  const defaultedKeys: DefaultedKey[] = [];
 
   for (const file of sourceFiles(SRC_DIR)) {
     const text = readFileSync(file, "utf8");
@@ -145,12 +149,13 @@ function collectI18nUsage(): I18nUsage {
       });
     }
 
-    function addDefaultedKey(key: string, node: ts.Node) {
+    function addDefaultedKey(key: string, node: ts.Node, defaultValue: string) {
       const { line } = source.getLineAndCharacterOfPosition(node.getStart());
       defaultedKeys.push({
         key,
         path: relative(SRC_DIR, file),
         line: line + 1,
+        defaultValue,
       });
     }
 
@@ -191,8 +196,9 @@ function collectI18nUsage(): I18nUsage {
           if (key) addKey(key, firstArg);
           if (ts.isTemplateExpression(firstArg)) addDynamicPattern(firstArg);
           const secondArg = node.arguments[1];
-          if (key && secondArg && literalDefault(secondArg) !== null) {
-            addDefaultedKey(key, firstArg);
+          const defaultValue = secondArg ? literalDefault(secondArg) : null;
+          if (key && defaultValue !== null) {
+            addDefaultedKey(key, firstArg, defaultValue);
           }
         }
       }
@@ -298,6 +304,35 @@ describe("Dashboard locale coverage", () => {
     expect(
       missing,
       "Dashboard t(...) calls provide literal fallback text that is not copied into src/locales/en.json.",
+    ).toEqual([]);
+  });
+
+  it("does not use conflicting literal fallbacks for the same i18n key", () => {
+    const defaultsByKey = new Map<string, Map<string, string[]>>();
+    for (const { key, defaultValue, path, line } of collectI18nUsage()
+      .defaultedKeys) {
+      const locationsByDefault = defaultsByKey.get(key) ?? new Map();
+      const locations = locationsByDefault.get(defaultValue) ?? [];
+      locations.push(`${path}:${line}`);
+      locationsByDefault.set(defaultValue, locations);
+      defaultsByKey.set(key, locationsByDefault);
+    }
+
+    const conflicts = [...defaultsByKey.entries()]
+      .filter(([, locationsByDefault]) => locationsByDefault.size > 1)
+      .map(([key, locationsByDefault]) => {
+        const variants = [...locationsByDefault.entries()]
+          .map(([defaultValue, locations]) => {
+            return `${JSON.stringify(defaultValue)} at ${locations.join(", ")}`;
+          })
+          .join("; ");
+        return `${key}: ${variants}`;
+      })
+      .sort();
+
+    expect(
+      conflicts,
+      "A single i18n key should not carry multiple literal fallback strings.",
     ).toEqual([]);
   });
 

@@ -239,7 +239,7 @@ export function SystemPromptSection({
         <div className="mt-2 rounded-lg border border-border-subtle bg-main/40 p-2 space-y-1">
           {versionsQuery.isLoading ? (
             <p className="text-xs text-text-dim px-1 py-2">
-              {t("common.loading", { defaultValue: "Loading…" })}
+              {t("common.loading", { defaultValue: "Loading..." })}
             </p>
           ) : versionsQuery.isError ? (
             <p className="text-xs text-red-500 px-1 py-2">
@@ -1253,7 +1253,7 @@ export function AgentsPage() {
           action={
             <Button variant="primary" size="sm" leftIcon={<RotateCcw className="h-3.5 w-3.5" />} onClick={async () => {
               try { await resumeMutation.mutateAsync(agent.id); } catch (e) {
-                addToast(toastErr(e, t("agents.resume_failed", { defaultValue: "Failed to resume" })), "error");
+                addToast(toastErr(e, t("agents.resume_failed", { defaultValue: "Failed to resume agent" })), "error");
               }
             }}>
               {t("agents.resume", { defaultValue: "Resume" })}
@@ -1297,7 +1297,7 @@ export function AgentsPage() {
           {t("agents.detail.live_conversation", { defaultValue: "Live conversation" })}
         </div>
         {sessionDetailQuery.isLoading && latestSessionForAgent ? (
-          <div className="text-[12px] text-text-dim italic">{t("common.loading", { defaultValue: "Loading…" })}</div>
+          <div className="text-[12px] text-text-dim italic">{t("common.loading", { defaultValue: "Loading..." })}</div>
         ) : visibleMessages.length === 0 ? (
           <div className="rounded-md border border-border-subtle bg-main/40 p-4 text-[12px] text-text-dim italic">
             {t("agents.detail.no_conversation", {
@@ -1400,7 +1400,7 @@ export function AgentsPage() {
           </Button>
         </div>
         {agentKvMemoryQuery.isLoading ? (
-          <div className="text-[12px] text-text-dim italic">{t("common.loading", { defaultValue: "Loading…" })}</div>
+          <div className="text-[12px] text-text-dim italic">{t("common.loading", { defaultValue: "Loading..." })}</div>
         ) : rows.length === 0 ? (
           <div className="rounded-md border border-border-subtle bg-main/40 p-4 text-[12px] text-text-dim italic">
             {t("agents.detail.no_memory", { defaultValue: "No memory entries yet for this agent." })}
@@ -1813,7 +1813,7 @@ export function AgentsPage() {
           },
           onError: (e) => {
             addToast(
-              toastErr(e, t("agents.tools_save_failed", { defaultValue: "Failed to save tool configuration" })),
+              toastErr(e, t("agents.tools_save_failed", { defaultValue: "Failed to update tools" })),
               "error",
             );
           },
@@ -2095,7 +2095,7 @@ export function AgentsPage() {
           </Button>
         </div>
         {agentEventsQuery.isLoading ? (
-          <div className="text-[12px] text-text-dim italic">{t("common.loading", { defaultValue: "Loading…" })}</div>
+          <div className="text-[12px] text-text-dim italic">{t("common.loading", { defaultValue: "Loading..." })}</div>
         ) : events.length === 0 ? (
           <div className="rounded-md border border-border-subtle bg-main/40 p-4 text-[12px] text-text-dim italic">
             {t("agents.detail.no_logs", { defaultValue: "No turns recorded yet for this agent." })}
@@ -2194,7 +2194,7 @@ export function AgentsPage() {
                     : "border-border-subtle bg-surface text-text-dim hover:border-brand/20 hover:text-brand"
                 }`}
               >
-                {t("agents.show_hand_agents", { defaultValue: "Hand" })}
+                {t("agents.show_hand_agents_short", { defaultValue: "Hand" })}
               </button>
               <select
                 value={sortBy}

@@ -618,7 +618,7 @@ export function SchedulerPage() {
           {editTargetsSchedule && (
             <div className="rounded-xl bg-brand/5 border border-brand/20 px-3 py-2 text-[10px] text-text-dim/70">
               <span className="font-bold text-brand/80">
-                {t("scheduler.job_name", { defaultValue: "Job" })}:{" "}
+                {t("scheduler.job", { defaultValue: "Job" })}:{" "}
               </span>
               {editTargetsSchedule.name || truncateId(editTargetsSchedule.id)}
               <span className="ml-2 font-mono text-text-dim/40">{editTargetsSchedule.cron}</span>

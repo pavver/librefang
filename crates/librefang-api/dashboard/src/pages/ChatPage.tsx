@@ -1568,7 +1568,7 @@ function AttachmentChip({ attachment, onRemove }: { attachment: PendingAttachmen
       <button
         type="button"
         onClick={() => onRemove(attachment.localId)}
-        title={t("chat.attachment_remove", { defaultValue: "Remove" })}
+        title={t("chat.attachment_remove", { defaultValue: "Remove attachment" })}
         aria-label={t("chat.attachment_remove", { defaultValue: "Remove attachment" })}
         className="absolute right-1 top-1 h-5 w-5 rounded-md flex items-center justify-center text-text-dim/70 hover:text-text hover:bg-main"
       >

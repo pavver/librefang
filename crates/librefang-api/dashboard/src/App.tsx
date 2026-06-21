@@ -433,7 +433,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
             <h2 id="change-credentials-dialog-title" className="text-base font-black tracking-tight">{t("settings.change_credentials")}</h2>
             <button
               onClick={onClose}
-              aria-label={t("common.close", { defaultValue: "Close dialog" })}
+              aria-label={t("common.close", { defaultValue: "Close" })}
               className="h-7 w-7 flex items-center justify-center rounded-lg text-text-dim hover:text-brand hover:bg-surface-hover transition-colors"
             >
               <X className="h-3.5 w-3.5" />

@@ -276,7 +276,7 @@ function HandDetailPanel({
                       className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-bold text-error bg-error/10 hover:bg-error/20 transition-colors disabled:opacity-40"
                     >
                       {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
-                      {t("hands.uninstall", { defaultValue: "Uninstall" })}
+                      {t("hands.uninstall_action", { defaultValue: "Uninstall" })}
                     </button>
                   )}
                 </>
@@ -647,7 +647,7 @@ function HandAgentEditor({
                   <button
                     type="button"
                     onClick={() => removeTool(tool)}
-                    aria-label={`${t("common.delete", { defaultValue: "Remove" })} ${tool}`}
+                    aria-label={`${t("common.remove", { defaultValue: "Remove" })} ${tool}`}
                     className="text-text-dim/40 hover:text-error transition-colors"
                   >
                     <X className="w-3 h-3" />
@@ -1118,7 +1118,7 @@ function HandSchedulesTab({ cronJobs, isLoading, onRefresh, agentId, handName }:
           className="rounded-xl border border-brand/30 bg-brand/[0.02] p-3 space-y-2.5"
         >
           <div>
-            <label className="text-[10px] font-bold text-text-dim uppercase">{t("scheduler.job_name", { defaultValue: "Name" })}</label>
+            <label className="text-[10px] font-bold text-text-dim uppercase">{t("common.name", { defaultValue: "Name" })}</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -1789,7 +1789,7 @@ export function HandsPage() {
 
   function handleUninstall(handId: string) {
     setConfirmDialog({
-      title: t("hands.uninstall", { defaultValue: "Uninstall" }),
+      title: t("hands.uninstall_action", { defaultValue: "Uninstall" }),
       message: t("hands.uninstall_confirm", {
         defaultValue: "Uninstall this hand? Its HAND.toml and workspace files will be deleted. This cannot be undone.",
       }),
