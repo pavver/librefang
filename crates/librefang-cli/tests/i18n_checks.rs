@@ -894,9 +894,7 @@ fn template_slug(name: &str) -> String {
     name.to_lowercase().replace(' ', "-")
 }
 
-fn collect_dynamic_required_english_keys(
-    manifest_dir: &Path,
-) -> std::collections::BTreeSet<String> {
+fn collect_dynamic_required_locale_keys(manifest_dir: &Path) -> std::collections::BTreeSet<String> {
     let mut keys = std::collections::BTreeSet::new();
 
     let templates_rs =
@@ -925,6 +923,54 @@ fn collect_dynamic_required_english_keys(
     }
 
     keys
+}
+
+fn collect_required_i18n_keys(
+    manifest_dir: &Path,
+    known_prefixes: &std::collections::BTreeSet<String>,
+) -> std::collections::BTreeSet<String> {
+    let src_dir = manifest_dir.join("src");
+    let mut required_keys = collect_dynamic_required_locale_keys(manifest_dir);
+
+    for entry in WalkDir::new(&src_dir) {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        if path.is_file() && path.extension().is_some_and(|ext| ext == "rs") {
+            let content = fs::read_to_string(path).unwrap();
+            for literal in collect_rust_string_literals(&content) {
+                if is_likely_i18n_key_literal(&literal, known_prefixes) {
+                    required_keys.insert(literal);
+                }
+            }
+        }
+    }
+
+    required_keys
+}
+
+fn assert_locale_covers_required_i18n_keys(
+    manifest_dir: &Path,
+    locale: &str,
+    display_name: &str,
+    required_keys: &std::collections::BTreeSet<String>,
+) {
+    let locale_keys: std::collections::BTreeSet<String> =
+        collect_locale_keys(&manifest_dir.join(format!("locales/{locale}/main.ftl")))
+            .into_iter()
+            .collect();
+
+    let missing_keys: Vec<String> = required_keys
+        .iter()
+        .filter(|key| !locale_keys.contains(key.as_str()))
+        .cloned()
+        .collect();
+
+    if !missing_keys.is_empty() {
+        panic!(
+            "{display_name} locale is missing keys referenced by CLI Rust code:\n{}",
+            missing_keys.join("\n")
+        );
+    }
 }
 
 #[test]
@@ -1016,39 +1062,16 @@ fn test_no_dead_locale_keys() {
 }
 
 #[test]
-fn test_english_locale_covers_used_i18n_keys() {
+fn test_english_and_ukrainian_locales_cover_used_i18n_keys() {
     let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is set");
     let manifest_dir = Path::new(&manifest_dir);
-    let src_dir = manifest_dir.join("src");
     let english_keys: std::collections::BTreeSet<String> =
         collect_locale_keys(&manifest_dir.join("locales/en/main.ftl"))
             .into_iter()
             .collect();
     let known_prefixes = locale_key_prefixes(&english_keys.iter().cloned().collect::<Vec<_>>());
+    let required_keys = collect_required_i18n_keys(manifest_dir, &known_prefixes);
 
-    let mut required_keys = collect_dynamic_required_english_keys(manifest_dir);
-    for entry in WalkDir::new(&src_dir) {
-        let entry = entry.unwrap();
-        let path = entry.path();
-        if path.is_file() && path.extension().is_some_and(|ext| ext == "rs") {
-            let content = fs::read_to_string(path).unwrap();
-            for literal in collect_rust_string_literals(&content) {
-                if is_likely_i18n_key_literal(&literal, &known_prefixes) {
-                    required_keys.insert(literal);
-                }
-            }
-        }
-    }
-
-    let missing_keys: Vec<String> = required_keys
-        .into_iter()
-        .filter(|key| !english_keys.contains(key))
-        .collect();
-
-    if !missing_keys.is_empty() {
-        panic!(
-            "English locale is missing keys referenced by CLI Rust code:\n{}",
-            missing_keys.join("\n")
-        );
-    }
+    assert_locale_covers_required_i18n_keys(manifest_dir, "en", "English", &required_keys);
+    assert_locale_covers_required_i18n_keys(manifest_dir, "uk", "Ukrainian", &required_keys);
 }
