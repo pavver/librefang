@@ -33,6 +33,7 @@ type I18nUsage = {
   keys: UsedKey[];
   looseKeys: UsedKey[];
   dynamicPatterns: DynamicKeyPattern[];
+  defaultedKeys: UsedKey[];
 };
 
 let usageCache: I18nUsage | null = null;
@@ -114,6 +115,7 @@ function collectI18nUsage(): I18nUsage {
   const keys: UsedKey[] = [];
   const looseKeys: UsedKey[] = [];
   const dynamicPatterns: DynamicKeyPattern[] = [];
+  const defaultedKeys: UsedKey[] = [];
 
   for (const file of sourceFiles(SRC_DIR)) {
     const text = readFileSync(file, "utf8");
@@ -143,6 +145,28 @@ function collectI18nUsage(): I18nUsage {
       });
     }
 
+    function addDefaultedKey(key: string, node: ts.Node) {
+      const { line } = source.getLineAndCharacterOfPosition(node.getStart());
+      defaultedKeys.push({
+        key,
+        path: relative(SRC_DIR, file),
+        line: line + 1,
+      });
+    }
+
+    function literalDefault(node: ts.Node): string | null {
+      const direct = stringLiteralText(node);
+      if (direct !== null) return direct;
+      if (ts.isObjectLiteralExpression(node)) {
+        for (const property of node.properties) {
+          if (!ts.isPropertyAssignment(property)) continue;
+          const name = propertyNameText(property.name);
+          if (name !== "defaultValue") continue;
+          return stringLiteralText(property.initializer);
+        }
+      }
+      return null;
+    }
 
     function addDynamicPattern(node: ts.TemplateExpression) {
       const { line } = source.getLineAndCharacterOfPosition(node.getStart());
@@ -166,6 +190,10 @@ function collectI18nUsage(): I18nUsage {
           const key = stringLiteralText(firstArg);
           if (key) addKey(key, firstArg);
           if (ts.isTemplateExpression(firstArg)) addDynamicPattern(firstArg);
+          const secondArg = node.arguments[1];
+          if (key && secondArg && literalDefault(secondArg) !== null) {
+            addDefaultedKey(key, firstArg);
+          }
         }
       }
 
@@ -199,7 +227,7 @@ function collectI18nUsage(): I18nUsage {
     visit(source);
   }
 
-  usageCache = { keys, looseKeys, dynamicPatterns };
+  usageCache = { keys, looseKeys, dynamicPatterns, defaultedKeys };
   return usageCache;
 }
 
@@ -244,6 +272,32 @@ describe("Dashboard locale coverage", () => {
     expect(
       missing,
       "Dashboard source references i18n keys that are missing from src/locales/en.json.",
+    ).toEqual([]);
+  });
+
+  it("copies every literal default fallback into src/locales/en.json", () => {
+    const enKeys = new Set(
+      flatten(JSON.parse(readFileSync(EN_LOCALE, "utf8")) as JsonValue),
+    );
+    const pluralBases = new Set(
+      [...enKeys].map(pluralBase).filter((b): b is string => b !== null),
+    );
+
+    const missingByKey = new Map<string, string[]>();
+    for (const { key, path, line } of collectI18nUsage().defaultedKeys) {
+      if (enKeys.has(key) || pluralBases.has(key)) continue;
+      const locations = missingByKey.get(key) ?? [];
+      locations.push(`${path}:${line}`);
+      missingByKey.set(key, locations);
+    }
+
+    const missing = [...missingByKey.entries()]
+      .map(([key, locations]) => `${key} (${locations.join(", ")})`)
+      .sort();
+
+    expect(
+      missing,
+      "Dashboard t(...) calls provide literal fallback text that is not copied into src/locales/en.json.",
     ).toEqual([]);
   });
 
