@@ -65,8 +65,21 @@ vi.mock("react-i18next", async () => {
   return {
     ...actual,
     useTranslation: () => ({
-      t: (key: string, opts?: { defaultValue?: string }) =>
-        opts?.defaultValue ?? key,
+      t: (key: string, opts?: Record<string, unknown>) => {
+        if (
+          key === "workflows.operator.pending_review" &&
+          opts?.count === 1
+        ) {
+          return "1 workflow run awaiting operator review";
+        }
+        let value = typeof opts?.defaultValue === "string" ? opts.defaultValue : key;
+        for (const [name, replacement] of Object.entries(opts ?? {})) {
+          if (name !== "defaultValue") {
+            value = value.split(`{{${name}}}`).join(String(replacement));
+          }
+        }
+        return value;
+      },
       i18n: { language: "en" },
     }),
   };

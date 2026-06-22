@@ -32,11 +32,11 @@ import {
 import { StaggerList } from "../components/ui/StaggerList";
 
 const TRIGGER_PATTERN_PRESETS = [
-  { label: "lifecycle (spawned + terminated)", value: '"lifecycle"' },
-  { label: "agent_spawned", value: '"agent_spawned"' },
-  { label: "agent_terminated", value: '"agent_terminated"' },
-  { label: "all events", value: '"all"' },
-  { label: "custom JSON…", value: "custom" },
+  { labelKey: "scheduler.trigger_preset_lifecycle", defaultLabel: "lifecycle (spawned + terminated)", value: '"lifecycle"' },
+  { labelKey: "scheduler.trigger_preset_agent_spawned", defaultLabel: "agent_spawned", value: '"agent_spawned"' },
+  { labelKey: "scheduler.trigger_preset_agent_terminated", defaultLabel: "agent_terminated", value: '"agent_terminated"' },
+  { labelKey: "scheduler.trigger_preset_all_events", defaultLabel: "all events", value: '"all"' },
+  { labelKey: "scheduler.trigger_preset_custom_json", defaultLabel: "custom JSON…", value: "custom" },
 ] as const;
 
 const INPUT_CLASS = "w-full rounded-xl border border-border-subtle bg-main px-3 py-2 text-sm outline-none focus:border-brand";
@@ -550,7 +550,7 @@ export function SchedulerPage() {
               <label className="text-[10px] font-bold text-text-dim uppercase">{t("scheduler.event_pattern", { defaultValue: "Event pattern" })}</label>
               <select value={triggerPatternPreset} onChange={e => setTriggerPatternPreset(e.target.value)} className={INPUT_CLASS}>
                 {TRIGGER_PATTERN_PRESETS.map(p => (
-                  <option key={p.value} value={p.value}>{p.label}</option>
+                  <option key={p.value} value={p.value}>{t(p.labelKey, { defaultValue: p.defaultLabel })}</option>
                 ))}
               </select>
               {triggerPatternPreset === "custom" && (

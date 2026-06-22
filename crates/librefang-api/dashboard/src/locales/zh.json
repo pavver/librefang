@@ -310,6 +310,9 @@
     "manifest_toml": "智能体清单 (TOML)",
     "thinking_toml_hint": "在 TOML 中添加 [thinking] 段可启用扩展思考",
     "schedule_manual": "手动触发",
+    "status_active": "智能体正在运行",
+    "status_crashed": "智能体已崩溃",
+    "status_suspended": "智能体已暂停",
     "kpi": {
       "sessions": "会话数 · 24h",
       "cost": "费用 · 24h",
@@ -939,7 +942,11 @@
     "reenable": "重新启用",
     "batch_test_partial": "{{success}} 通过，{{failed}} 失败",
     "credential_pools": "凭据池",
-    "credential_pools_hint": "在 config.toml `[[credential_pools]]` 中配置"
+    "credential_pools_hint": "在 config.toml `[[credential_pools]]` 中配置",
+    "tier_fast": "快速",
+    "tier_balanced": "均衡",
+    "tier_smart": "智能",
+    "tier_frontier": "前沿"
   },
   "channels": {
     "add": "添加",
@@ -979,7 +986,9 @@
     "configured": "已配置",
     "login_success": "登录成功",
     "qr_failed": "二维码登录失败",
+    "qr_expired_restart": "二维码已过期 — 请重启 sidecar 后重试",
     "qr_login": "二维码登录",
+    "qr_scan_with_app": "请使用 {{channel}} 应用扫码",
     "sidecar_details": "作为进程外 sidecar 适配器运行。请在 config.toml ([[sidecar_channels]]) 中管理，路径为 Config → Sidecar Channels，或使用通道卡片上的齿轮打开配置抽屉。"
   },
   "skills": {
@@ -1594,6 +1603,7 @@
     "prompt_sent": "发送的提示词：",
     "output": "输出：",
     "generated_images": "生成的图片：",
+    "generated_image_alt": "生成的图片",
     "loading_details": "正在加载详情…",
     "flows_count": "{{n}} 个流程",
     "templates_count_meta": "{{n}} 个模板",
@@ -1606,6 +1616,7 @@
     "from_review_banner": "来自审查横幅",
     "no_runs": "无运行",
     "no_schedule": "无调度",
+    "detected_param_description": "参数 '{{name}}' 用于步骤 '{{step}}'",
     "operator": {
       "loading": "正在加载操作员审查…",
       "unavailable": "操作员暂停不可用:",
@@ -1618,7 +1629,9 @@
       "provide_field": "提供 '{{field}}'",
       "response_placeholder": "你的回复（文本）",
       "submitting": "正在提交…",
-      "submit_action": "提交 {{action}}"
+      "submit_action": "提交 {{action}}",
+      "pending_review_other": "{{count}} 个工作流运行正在等待操作员审查",
+      "empty_artifact": "（空产物）"
     }
   },
   "scheduler": {
@@ -1745,6 +1758,12 @@
     "pattern": "模式",
     "prompt_template": "提示模板",
     "prompt_sent_placeholder": "事件触发时发送给智能体的提示…",
+    "trigger_preset_lifecycle": "lifecycle（生成 + 终止）",
+    "trigger_preset_agent_spawned_any": "agent_spawned（任意）",
+    "trigger_preset_agent_spawned": "agent_spawned",
+    "trigger_preset_agent_terminated": "agent_terminated",
+    "trigger_preset_all_events": "所有事件",
+    "trigger_preset_custom_json": "自定义 JSON…",
     "cooldown_seconds": "冷却（秒，留空 = 无）",
     "session_mode_default": "会话模式（留空 = 智能体默认）",
     "agent_default": "智能体默认",
@@ -3242,6 +3261,8 @@
     "update_failed": "更新 MCP 服务器失败",
     "delete_success": "MCP 服务器已删除",
     "delete_failed": "删除 MCP 服务器失败",
+    "taint_action_scan": "scan（默认）",
+    "taint_action_skip": "skip（绕过扫描）",
     "help": "MCP（Model Context Protocol）服务器是你的 agent 可以调用的外部工具提供方。协议标准化了工具发现和调用方式，所以任何符合 MCP 的服务器一旦加进来，都能被本实例的 agent 用上。\n\n支持的传输方式：\n  · stdio —— 运行本地命令（如 `npx`、`python`）\n  · SSE —— 通过 Server-Sent Events 连接\n  · HTTP —— 通过 HTTP Streamable 连接\n\n使用步骤：\n\n1. 从目录安装。在目录页找到已知服务器点 \"Install\"，传输、参数、env 都会预填。\n\n2. 自定义添加。\"Add server\" 可以接入任意 MCP 服务器——选传输、填 command / URL、加参数和 env。\n\n3. 鉴权。需要 OAuth 的服务器会显示 \"Authorize\"，点击进入 PKCE 流程。token 过期时 re-authorize；要回收时 revoke。\n\n4. 验证。添加 / 连接成功后，卡片会列出该服务器的工具列表。Agent 通过工具策略申请使用。\n\n典型场景：\n\n  · 接一个文件系统 MCP，让 agent 能读写一个沙盒目录。\n  · 接 SaaS MCP（Notion、Linear 等）做 ticket / doc 流。\n  · 跑一个内部 MCP 服务器，把业务 API 暴露给 agent。\n\n注意事项：\n\n  · OAuth 流程是 UI 驱动的——daemon 检测 401，API 服务器跑 PKCE 与 callback。服务器支持时使用 Dynamic Client Registration（RFC 7591）。\n  · env 变量值按你填的存；当作机密对待。\n  · 失败的服务器会以 auth-pending / failed 留在列表上；调试工具前先确认鉴权和传输。",
     "auth_authorized": "已授权",
     "auth_pending": "授权中...",
@@ -3813,6 +3834,7 @@
     "filter_agent": "按智能体筛选",
     "all_agents": "全部智能体",
     "col_pending": "待处理",
+    "status_scheduled": "已计划",
     "col_in_progress": "进行中",
     "col_completed": "已完成",
     "col_failed": "失败",

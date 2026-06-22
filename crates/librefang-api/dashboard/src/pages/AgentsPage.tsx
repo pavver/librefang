@@ -2306,7 +2306,17 @@ export function AgentsPage() {
                 <div className="flex items-start gap-3 min-w-0 flex-1">
                   <div className="relative shrink-0">
                     <Avatar fallback={detailAgent.name} size="lg" />
-                    <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full ${drawerStatusColor} border-2 border-surface ${!isDetailDrawerSuspended && !isDetailDrawerCrashed ? "animate-pulse" : ""}`} role="img" aria-label={isDetailDrawerSuspended ? "Agent suspended" : isDetailDrawerCrashed ? "Agent crashed" : "Agent active"} />
+                    <span
+                      className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full ${drawerStatusColor} border-2 border-surface ${!isDetailDrawerSuspended && !isDetailDrawerCrashed ? "animate-pulse" : ""}`}
+                      role="img"
+                      aria-label={
+                        isDetailDrawerSuspended
+                          ? t("agents.status_suspended", { defaultValue: "Agent suspended" })
+                          : isDetailDrawerCrashed
+                          ? t("agents.status_crashed", { defaultValue: "Agent crashed" })
+                          : t("agents.status_active", { defaultValue: "Agent active" })
+                      }
+                    />
                   </div>
                   <div className="min-w-0 flex-1">
                     {editingName ? (

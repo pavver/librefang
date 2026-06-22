@@ -911,10 +911,10 @@ const EMPTY_MODEL: ModelEntry = {
 // it was rejected by the catalog TOML parser and made the provider silently
 // vanish (#5822); "frontier" is the real top-capability tier.
 const TIER_OPTIONS = [
-  { value: "fast", label: "Fast" },
-  { value: "balanced", label: "Balanced" },
-  { value: "smart", label: "Smart" },
-  { value: "frontier", label: "Frontier" },
+  { value: "fast", labelKey: "providers.tier_fast", defaultLabel: "Fast" },
+  { value: "balanced", labelKey: "providers.tier_balanced", defaultLabel: "Balanced" },
+  { value: "smart", labelKey: "providers.tier_smart", defaultLabel: "Smart" },
+  { value: "frontier", labelKey: "providers.tier_frontier", defaultLabel: "Frontier" },
 ];
 
 function CreateProviderWizard({
@@ -1117,7 +1117,15 @@ function CreateProviderWizard({
                   <Input label={t("providers.wizard_model_name")} value={m.display_name} onChange={(e) => updateModel(idx, "display_name", e.target.value)} placeholder="GPT-4o" />
                 </div>
                 <div className="grid grid-cols-3 gap-3">
-                  <Select label={t("providers.wizard_model_tier")} options={TIER_OPTIONS} value={m.tier} onChange={(e) => updateModel(idx, "tier", e.target.value)} />
+                  <Select
+                    label={t("providers.wizard_model_tier")}
+                    options={TIER_OPTIONS.map((option) => ({
+                      value: option.value,
+                      label: t(option.labelKey, { defaultValue: option.defaultLabel }),
+                    }))}
+                    value={m.tier}
+                    onChange={(e) => updateModel(idx, "tier", e.target.value)}
+                  />
                   <Input label={t("providers.wizard_model_context")} type="number" value={m.context_window === "" ? "" : String(m.context_window)}
                     onChange={(e) => updateModel(idx, "context_window", e.target.value === "" ? "" : Number(e.target.value))} placeholder="128000" />
                   <Input label={t("providers.wizard_model_max_output")} type="number" value={m.max_output_tokens === "" ? "" : String(m.max_output_tokens)}

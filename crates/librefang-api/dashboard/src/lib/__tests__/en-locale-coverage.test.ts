@@ -40,12 +40,20 @@ type HardcodedText = {
   line: number;
 };
 
+type LiteralCandidate = {
+  text: string;
+  kind: string;
+  path: string;
+  line: number;
+};
+
 type I18nUsage = {
   keys: UsedKey[];
   looseKeys: UsedKey[];
   dynamicPatterns: DynamicKeyPattern[];
   defaultedKeys: DefaultedKey[];
   hardcodedTexts: HardcodedText[];
+  literalCandidates: LiteralCandidate[];
 };
 
 let usageCache: I18nUsage | null = null;
@@ -77,7 +85,8 @@ function sourceFiles(dir: string): string[] {
     if (
       entry.isFile() &&
       /\.(ts|tsx)$/.test(entry.name) &&
-      !/\.test\.(ts|tsx)$/.test(entry.name)
+      !/\.test\.(ts|tsx)$/.test(entry.name) &&
+      entry.name !== "setupTests.ts"
     ) {
       out.push(path);
     }
@@ -101,12 +110,25 @@ function propertyNameText(name: ts.PropertyName): string | null {
   return null;
 }
 
+function bindingNameText(name: ts.BindingName): string | null {
+  return ts.isIdentifier(name) ? name.text : null;
+}
+
 function isTranslationCall(node: ts.CallExpression): boolean {
   const callee = node.expression;
   return (
     (ts.isIdentifier(callee) && callee.text === "t") ||
     (ts.isPropertyAccessExpression(callee) && callee.name.text === "t")
   );
+}
+
+function hasAncestor(node: ts.Node, predicate: (ancestor: ts.Node) => boolean): boolean {
+  let current = node.parent;
+  while (current) {
+    if (predicate(current)) return true;
+    current = current.parent;
+  }
+  return false;
 }
 
 function escapeRegExp(value: string): string {
@@ -121,6 +143,31 @@ function templatePattern(node: ts.TemplateExpression): RegExp {
   return new RegExp(`^${parts.join("")}$`);
 }
 
+function isUserFacingPropertyName(name: string): boolean {
+  return /^(ariaLabel|badge|cancelLabel|confirmLabel|description|detail|empty|emptyBody|emptyTitle|errorText|help|helpText|hint|label|message|placeholder|subtitle|successText|title|tooltip)$/.test(name);
+}
+
+function isUserFacingVariableName(name: string): boolean {
+  return /^(description|detail|empty|errorText|helpText|message|subtitle|title)$/.test(name);
+}
+
+function collectLiteralTexts(node: ts.Node, out: string[] = []): string[] {
+  const text = stringLiteralText(node);
+  if (text !== null) {
+    out.push(text);
+    return out;
+  }
+  if (ts.isTemplateExpression(node)) {
+    out.push(node.head.text);
+    for (const span of node.templateSpans) {
+      out.push(span.literal.text);
+    }
+    return out;
+  }
+  ts.forEachChild(node, (child) => collectLiteralTexts(child, out));
+  return out;
+}
+
 function collectI18nUsage(): I18nUsage {
   if (usageCache) return usageCache;
 
@@ -129,6 +176,7 @@ function collectI18nUsage(): I18nUsage {
   const dynamicPatterns: DynamicKeyPattern[] = [];
   const defaultedKeys: DefaultedKey[] = [];
   const hardcodedTexts: HardcodedText[] = [];
+  const literalCandidates: LiteralCandidate[] = [];
 
   for (const file of sourceFiles(SRC_DIR)) {
     const text = readFileSync(file, "utf8");
@@ -202,10 +250,86 @@ function collectI18nUsage(): I18nUsage {
       });
     }
 
+    function addLiteralCandidate(text: string, kind: string, node: ts.Node) {
+      const { line } = source.getLineAndCharacterOfPosition(node.getStart());
+      literalCandidates.push({
+        text,
+        kind,
+        path: relative(SRC_DIR, file),
+        line: line + 1,
+      });
+    }
+
+    function literalCandidateKind(node: ts.Node): string | null {
+      const parent = node.parent;
+
+      if (!parent) return "literal";
+      if (ts.isImportDeclaration(parent) || ts.isExportDeclaration(parent)) {
+        return null;
+      }
+      if (ts.isLiteralTypeNode(parent)) return null;
+      if (ts.isPropertyAssignment(parent) && parent.name === node) return null;
+      if (ts.isPropertyAccessExpression(parent)) return null;
+      if (ts.isElementAccessExpression(parent)) return null;
+      if (hasAncestor(node, (ancestor) => ts.isCallExpression(ancestor) && isTranslationCall(ancestor))) {
+        return null;
+      }
+      if (
+        hasAncestor(
+          node,
+          (ancestor) =>
+            ts.isCallExpression(ancestor) &&
+            ts.isPropertyAccessExpression(ancestor.expression) &&
+            ts.isIdentifier(ancestor.expression.expression) &&
+            ancestor.expression.expression.text === "console",
+        )
+      ) {
+        return null;
+      }
+
+      if (ts.isJsxAttribute(parent) && parent.initializer === node) {
+        if (!ts.isIdentifier(parent.name)) return null;
+        const attrName = parent.name.text;
+        if (
+          /^(className|id|href|to|target|rel|type|value|name|role|data-|width|height|viewBox|d|stroke|fill|xmlns)$/.test(
+            attrName,
+          )
+        ) {
+          return null;
+        }
+        return `jsx-attr:${attrName}`;
+      }
+
+      if (ts.isPropertyAssignment(parent) && parent.initializer === node) {
+        const propertyName = propertyNameText(parent.name);
+        if (!propertyName) return "ts-prop";
+        if (propertyName === "defaultValue") return null;
+        return isUserFacingPropertyName(propertyName)
+          ? `ts-prop:${propertyName}`
+          : null;
+      }
+
+      if (ts.isVariableDeclaration(parent) && parent.initializer === node) {
+        const name = bindingNameText(parent.name);
+        return name && isUserFacingVariableName(name) ? `ts-var:${name}` : null;
+      }
+
+      if (hasAncestor(node, ts.isJsxExpression)) {
+        return "jsx-expression";
+      }
+
+      return null;
+    }
+
     function visit(node: ts.Node) {
       const literalKey = stringLiteralText(node);
       if (literalKey && isLikelyLocaleKey(literalKey)) {
         addLooseKey(literalKey, node);
+      }
+
+      if (literalKey) {
+        const kind = literalCandidateKind(node);
+        if (kind) addLiteralCandidate(literalKey, kind, node);
       }
 
       if (ts.isCallExpression(node) && isTranslationCall(node)) {
@@ -233,6 +357,24 @@ function collectI18nUsage(): I18nUsage {
           ts.isTemplateExpression(node.initializer)
         ) {
           addDynamicPattern(node.initializer);
+        }
+        if (
+          propertyName &&
+          propertyName !== "defaultValue" &&
+          isUserFacingPropertyName(propertyName)
+        ) {
+          for (const text of collectLiteralTexts(node.initializer)) {
+            addHardcodedText(text, `ts-prop:${propertyName}`, node.initializer);
+          }
+        }
+      }
+
+      if (ts.isVariableDeclaration(node)) {
+        const name = bindingNameText(node.name);
+        if (name && node.initializer && isUserFacingVariableName(name)) {
+          for (const text of collectLiteralTexts(node.initializer)) {
+            addHardcodedText(text, `ts-var:${name}`, node.initializer);
+          }
         }
       }
 
@@ -276,6 +418,7 @@ function collectI18nUsage(): I18nUsage {
     dynamicPatterns,
     defaultedKeys,
     hardcodedTexts,
+    literalCandidates,
   };
   return usageCache;
 }
@@ -307,6 +450,7 @@ function isTechnicalLiteral(text: string): boolean {
   if (!/\p{L}/u.test(text)) return true;
   if (/^&[a-z]+;$/.test(text)) return true;
   if (/^(⌘|Ctrl\+|ESC|↑↓|↵)/.test(text)) return true;
+  if (/^(Cmd\/Ctrl|Shift\+Cmd\/Ctrl|Space \+ Drag)/.test(text)) return true;
   if (/^librefang\b/.test(text)) return true;
   if (/^(GET|POST|PUT|PATCH|DELETE) \//.test(text)) return true;
   if (/^[A-Z][A-Za-z0-9]+(?:[A-Z][A-Za-z0-9]+)+$/.test(text)) return true;
@@ -321,8 +465,25 @@ function isTechnicalLiteral(text: string): boolean {
   return false;
 }
 
+function isStylingLiteral(text: string): boolean {
+  if (/^(linear-gradient|#[0-9a-fA-F]{3,8}\b|[0-9.]+px solid\b)/.test(text)) {
+    return true;
+  }
+  if (
+    /(?:^|\s)(?:absolute|relative|fixed|sticky|block|inline|inline-flex|flex|grid|hidden|contents|sr-only|pointer-events-none|cursor-|select-|resize-|overflow-|z-|inset-|top-|right-|bottom-|left-|m[trblxy]?-|p[trblxy]?-|h-|w-|min-|max-|rounded|border|bg-|from-|via-|to-|text-|font-|tracking-|leading-|uppercase|lowercase|capitalize|items-|justify-|content-|self-|gap-|space-|shadow|ring-|outline|opacity-|transition|duration-|ease-|delay-|transform|translate-|scale-|rotate-|animate-|motion-|hover:|focus:|active:|disabled:|group-hover:|sm:|md:|lg:|xl:|2xl:|3xl:|4xl:|\[[^\]]+\])/.test(
+      text,
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
 function isAllowedHardcodedText(text: string, kind: string): boolean {
   if (isTechnicalLiteral(text)) return true;
+  if (["English", "Українська", "中文", "简体中文"].includes(text)) return true;
+  if (["Telegram", "Slack", "Discord", "Signal"].includes(text)) return true;
+  if (["CLI N/A"].includes(text)) return true;
   if (kind === "jsx-attr:placeholder" && /^e\.g\. [\w./:"{}* -]+$/.test(text)) {
     return true;
   }
@@ -332,6 +493,25 @@ function isAllowedHardcodedText(text: string, kind: string): boolean {
   ) {
     return true;
   }
+  return false;
+}
+
+function isAllowedLiteralCandidate(text: string, kind: string): boolean {
+  if (isAllowedHardcodedText(text, kind)) return true;
+  if (isStylingLiteral(text)) return true;
+  if (isLikelyLocaleKey(text)) return true;
+  if (/^\.\/pages\/[A-Za-z]+/.test(text)) return true;
+  if (/^[a-z][A-Za-z0-9]*(?:\.[a-z][A-Za-z0-9]*)+$/.test(text)) return true;
+  if (/^[A-Za-z][A-Za-z0-9_]*(?:\[\])?$/.test(text)) return true;
+  if (/^[A-Za-z][A-Za-z0-9_]*(?:\s+[A-Za-z][A-Za-z0-9_]*)+$/.test(text) && kind === "ts-prop:keyword") return true;
+  if (/^\\n$/.test(text)) return true;
+  if (/^".*"$/.test(text)) return true;
+  if (/^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/.test(text)) return true;
+  if (/^(OpenAI|Anthropic|Gemini|Groq|Ollama|Mistral|DeepSeek|Qwen|Llama|Claude|GPT|MCP|OAuth|PKCE|SSE|HTTP|JSON|YAML|TOML|CSV|SQLite|GitHub|GitLab|Bitbucket|Notion|Linear|WhatsApp|WeChat|Mailgun|IMAP|SMTP)$/.test(text)) return true;
+  if (/^(text|password|number|checkbox|radio|button|submit|reset|email|url|search|tel|date|time|datetime-local|month|week|color|file|range|hidden)$/.test(text)) return true;
+  if (/^(left|right|top|bottom|center|start|end|horizontal|vertical|none|auto|manual|custom|default|primary|secondary|success|warning|danger|info|small|medium|large)$/.test(text)) return true;
+  if (/^(true|false|null|undefined|NaN|Infinity)$/.test(text)) return true;
+  if (/^[A-Za-z_][A-Za-z0-9_]*\([^)]*\)$/.test(text)) return true;
   return false;
 }
 
@@ -434,6 +614,26 @@ describe("Dashboard locale coverage", () => {
     expect(
       hardcoded,
       "Dashboard JSX contains hardcoded user-facing text. Route it through t(...).",
+    ).toEqual([]);
+  });
+
+  it("does not leave unaudited user-facing string literals", () => {
+    const candidates = collectI18nUsage().literalCandidates
+      .map(({ text, kind, path, line }) => ({
+        text: normalizeJsxText(text),
+        kind,
+        path,
+        line,
+      }))
+      .filter(({ text, kind }) => !isAllowedLiteralCandidate(text, kind))
+      .map(({ text, kind, path, line }) => {
+        return `${path}:${line} ${kind} ${JSON.stringify(text)}`;
+      })
+      .sort();
+
+    expect(
+      candidates,
+      "Dashboard source contains string literals that look user-facing but are not routed through i18n. Either translate them or add a narrow technical allowlist.",
     ).toEqual([]);
   });
 

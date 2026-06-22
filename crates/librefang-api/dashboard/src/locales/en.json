@@ -310,6 +310,9 @@
     "manifest_toml": "Agent Manifest (TOML)",
     "thinking_toml_hint": "Add a [thinking] section in TOML to enable extended thinking",
     "schedule_manual": "manual",
+    "status_active": "Agent active",
+    "status_crashed": "Agent crashed",
+    "status_suspended": "Agent suspended",
     "kpi": {
       "sessions": "Sessions · 24h",
       "cost": "Cost · 24h",
@@ -939,7 +942,11 @@
     "reenable": "Re-enable",
     "batch_test_partial": "{{success}} passed, {{failed}} failed",
     "credential_pools": "Credential pools",
-    "credential_pools_hint": "configure in config.toml `[[credential_pools]]`"
+    "credential_pools_hint": "configure in config.toml `[[credential_pools]]`",
+    "tier_fast": "Fast",
+    "tier_balanced": "Balanced",
+    "tier_smart": "Smart",
+    "tier_frontier": "Frontier"
   },
   "channels": {
     "add": "Add",
@@ -979,7 +986,9 @@
     "configured": "configured",
     "login_success": "Login successful",
     "qr_failed": "QR login failed",
+    "qr_expired_restart": "QR code expired — restart the sidecar to try again",
     "qr_login": "QR Login",
+    "qr_scan_with_app": "Scan with your {{channel}} app",
     "sidecar_details": "Runs as an out-of-process sidecar adapter. Manage it in config.toml ([[sidecar_channels]]) — Config → Sidecar Channels, or use the gear on the channel card to open the configure drawer."
   },
   "skills": {
@@ -1594,6 +1603,7 @@
     "prompt_sent": "Prompt sent:",
     "output": "Output:",
     "generated_images": "Generated images:",
+    "generated_image_alt": "generated image",
     "loading_details": "Loading details…",
     "flows_count": "{{n}} flows",
     "templates_count_meta": "{{n}} templates",
@@ -1606,6 +1616,7 @@
     "from_review_banner": "from review banner",
     "no_runs": "no runs",
     "no_schedule": "no schedule",
+    "detected_param_description": "Parameter '{{name}}' used in step '{{step}}'",
     "operator": {
       "loading": "Loading operator review…",
       "unavailable": "Operator pause unavailable:",
@@ -1618,7 +1629,10 @@
       "provide_field": "Provide '{{field}}'",
       "response_placeholder": "Your response (text)",
       "submitting": "Submitting…",
-      "submit_action": "Submit {{action}}"
+      "submit_action": "Submit {{action}}",
+      "pending_review_one": "1 workflow run awaiting operator review",
+      "pending_review_other": "{{count}} workflow runs awaiting operator review",
+      "empty_artifact": "(empty artifact)"
     }
   },
   "scheduler": {
@@ -1737,6 +1751,12 @@
     "cooldown": "Cooldown",
     "event_pattern": "Event pattern",
     "trigger_prompt_placeholder": "Prompt template sent to the agent when the event fires…",
+    "trigger_preset_lifecycle": "lifecycle (spawned + terminated)",
+    "trigger_preset_agent_spawned_any": "agent_spawned (any)",
+    "trigger_preset_agent_spawned": "agent_spawned",
+    "trigger_preset_agent_terminated": "agent_terminated",
+    "trigger_preset_all_events": "all events",
+    "trigger_preset_custom_json": "custom JSON…",
     "max_fires": "Max fires (0 = unlimited)",
     "target_agent_optional": "Target agent (optional)",
     "same_agent": "Same agent",
@@ -3242,6 +3262,8 @@
     "update_failed": "Failed to update MCP server",
     "delete_success": "MCP server deleted",
     "delete_failed": "Failed to delete MCP server",
+    "taint_action_scan": "scan (default)",
+    "taint_action_skip": "skip (bypass scanning)",
     "help": "MCP (Model Context Protocol) servers are external tool providers your agents can call. The protocol standardises tool-discovery and tool-invocation, so any MCP-compliant server becomes available to agents on this instance once added.\n\nSupported transports:\n  · stdio — runs a local command (e.g. `npx`, `python`)\n  · SSE — connects via Server-Sent Events\n  · HTTP — connects via HTTP Streamable\n\nHow to use this page:\n\n1. Install from catalogue. Browse the catalogue tab and click \"Install\" on a known server. The transport, args, and env are pre-filled.\n\n2. Add custom. \"Add server\" lets you wire any MCP server — pick the transport, provide the command / URL, fill args and env vars.\n\n3. Authenticate. Servers that need OAuth show \"Authorize\"; click it to start the PKCE flow. Re-authorize when tokens expire; revoke to cut access.\n\n4. Verify. After add / connect, the server card lists its tools. Agents can now request them via tool policy.\n\nTypical scenarios:\n\n  · Plugging in a filesystem MCP so agents can read and write a sandbox dir.\n  · Wiring a SaaS MCP (Notion, Linear, …) for ticket / doc workflows.\n  · Running an internal MCP server that exposes your business APIs.\n\nThings to know:\n\n  · OAuth flow is UI-driven — daemon detects 401, the API server runs PKCE and the callback. Dynamic Client Registration (RFC 7591) is used when the server supports it.\n  · Env-var values are stored as configured; treat them as secrets.\n  · A failing server keeps showing in the list as auth-pending / failed; check the auth and transport before debugging tools.",
     "auth_authorized": "Authorized",
     "auth_pending": "Authorizing...",
@@ -3813,6 +3835,7 @@
     "filter_agent": "Filter by agent",
     "all_agents": "All agents",
     "col_pending": "Pending",
+    "status_scheduled": "Scheduled",
     "col_in_progress": "In Progress",
     "col_completed": "Completed",
     "col_failed": "Failed",
