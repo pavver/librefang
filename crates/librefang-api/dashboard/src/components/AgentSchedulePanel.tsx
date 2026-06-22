@@ -1145,7 +1145,7 @@ export function AgentSchedulePanel({ agent }: AgentSchedulePanelProps) {
               onChange={(e) => setTrigSessionMode(e.target.value)}
               className={INPUT_CLASS}
             >
-              <option value="">agent default</option>
+              <option value="">{t("scheduler.agent_default", { defaultValue: "agent default" })}</option>
               <option value="persistent">persistent</option>
               <option value="new">new</option>
             </select>

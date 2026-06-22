@@ -49,7 +49,8 @@
     "open_menu": "打开导航菜单",
     "skip_to_content": "跳转到内容",
     "more": "更多",
-    "mobile_tabs": "底部导航"
+    "mobile_tabs": "底部导航",
+    "console": "控制台"
   },
   "common": {
     "copied": "已复制",
@@ -170,7 +171,9 @@
     "size": "大小",
     "path": "路径",
     "select_options": "选择选项",
-    "error_loading_data": "加载记忆失败"
+    "error_loading_data": "加载记忆失败",
+    "reload": "重新加载",
+    "save_changes": "保存更改"
   },
   "status": {
     "active": "活跃",
@@ -483,7 +486,9 @@
       "quiet_hours_placeholder": "0 22 * * *",
       "simple_threshold_placeholder": "512",
       "complex_threshold_placeholder": "2048",
-      "schema_name_placeholder": "my_schema"
+      "schema_name_placeholder": "my_schema",
+      "remove_fallback": "移除 fallback",
+      "remove_context_injection": "移除上下文注入"
     },
     "delete_confirm": "确定要删除智能体 \"{{name}}\" 吗？",
     "prompts": "提示词管理",
@@ -817,7 +822,11 @@
     "select_an_agent_hint": "在左侧选择智能体以查看其会话、记忆、技能和实时日志。",
     "tools_declared_count": "已声明",
     "tools_declared_title": "已声明工具",
-    "tools_declared_desc": "此智能体可使用的工具。留空则可不受限制地访问所有工具。"
+    "tools_declared_desc": "此智能体可使用的工具。留空则可不受限制地访问所有工具。",
+    "providers_error_loading": "加载错误",
+    "no_providers": "没有供应商",
+    "select_provider_first": "请先选择供应商",
+    "no_models": "没有模型"
   },
   "providers": {
     "title": "供应商",
@@ -873,7 +882,7 @@
     "base_url_hint": "仅填 host:port (如 http://192.168.1.10:11434) 时会自动追加 /v1,适配 OpenAI 兼容端点。",
     "proxy_url": "代理 URL",
     "proxy_url_placeholder": "http://proxy:8080 或 socks5://proxy:1080",
-    "api_key": "API Key",
+    "api_key": "API 密钥",
     "set_as_default": "设为默认",
     "default_set": "默认供应商已更新",
     "auto_select_model": "自动选择最佳模型",
@@ -928,7 +937,9 @@
     "reenabled": "提供商已重新启用",
     "batch_test_all_failed": "所有测试失败",
     "reenable": "重新启用",
-    "batch_test_partial": "{{success}} 通过，{{failed}} 失败"
+    "batch_test_partial": "{{success}} 通过，{{failed}} 失败",
+    "credential_pools": "凭据池",
+    "credential_pools_hint": "在 config.toml `[[credential_pools]]` 中配置"
   },
   "channels": {
     "add": "添加",
@@ -968,7 +979,8 @@
     "configured": "已配置",
     "login_success": "登录成功",
     "qr_failed": "二维码登录失败",
-    "qr_login": "二维码登录"
+    "qr_login": "二维码登录",
+    "sidecar_details": "作为进程外 sidecar 适配器运行。请在 config.toml ([[sidecar_channels]]) 中管理，路径为 Config → Sidecar Channels，或使用通道卡片上的齿轮打开配置抽屉。"
   },
   "skills": {
     "title": "技能",
@@ -1074,7 +1086,35 @@
     "propose_registry_hint": "打开 PR，将此技能贡献到公共注册表（需要 GitHub token）",
     "search_to_explore": "输入以搜索各个 hub",
     "propose_registry_confirm": "打开 pull request，将 {{name}} 贡献到公共技能注册表？",
-    "propose_registry_opened": "Pull request 已打开：{{pr_url}}"
+    "propose_registry_opened": "Pull request 已打开：{{pr_url}}",
+    "copy_command": "复制命令",
+    "copy_install_command": "复制安装命令",
+    "pending_source_explicit": "明确指令",
+    "pending_source_correction": "用户更正",
+    "pending_source_repeated_tool": "重复工具模式",
+    "pending_proposed_changes": "拟议更改",
+    "pending_loading_current_body": "正在加载当前技能正文…",
+    "pending_current_body_failed": "无法加载当前技能正文以生成 diff:",
+    "pending_unknown": "未知",
+    "pending_no_diff": "当前正文和拟议正文没有差异。",
+    "pending_update": "更新",
+    "pending_captured": "捕获于",
+    "pending_agent": "智能体",
+    "pending_user_message_excerpt": "用户消息摘录",
+    "pending_assistant_response_excerpt": "助手回复摘录",
+    "pending_body_draft": "正文草稿",
+    "pending_approving": "正在批准…",
+    "pending_propose_registry_title": "将此草稿作为 PR 提交到公共技能注册表",
+    "pending_proposing": "正在提交…",
+    "pending_approve_failed": "批准失败:",
+    "pending_propose_failed": "提交到注册表失败:",
+    "pending_pr_opened": "Pull request 已打开:",
+    "pending_reject_title": "拒绝候选？",
+    "pending_rejecting": "正在拒绝…",
+    "pending_title": "Skill workshop 待处理",
+    "pending_load_failed": "加载待处理候选失败:",
+    "pending_unknown_error": "未知错误",
+    "pending_desc": "从智能体对话捕获的草稿正在等待你审查（#3328）。"
   },
   "hands": {
     "title": "Hands",
@@ -1141,7 +1181,9 @@
     "reset_default_title": "恢复此 Hand 的 HAND.toml 中自带的值",
     "save": "保存",
     "saved": "已保存",
-    "edit_agent_unavailable": "未找到该角色对应的智能体，请尝试重新加载。"
+    "edit_agent_unavailable": "未找到该角色对应的智能体，请尝试重新加载。",
+    "details": "Hand 详情",
+    "delete_schedule": "删除调度"
   },
   "analytics": {
     "title": "分析",
@@ -1561,7 +1603,23 @@
     "no_templates_match": "没有匹配的模板。",
     "no_match": "没有匹配的工作流。",
     "selected_review": "已选审查",
-    "from_review_banner": "来自审查横幅"
+    "from_review_banner": "来自审查横幅",
+    "no_runs": "无运行",
+    "no_schedule": "无调度",
+    "operator": {
+      "loading": "正在加载操作员审查…",
+      "unavailable": "操作员暂停不可用:",
+      "resolve_failed": "无法处理操作员步骤",
+      "review_required": "需要操作员审查",
+      "paused": "已暂停",
+      "step": "步骤",
+      "artifact": "产物",
+      "freeform_input": "自由输入",
+      "provide_field": "提供 '{{field}}'",
+      "response_placeholder": "你的回复（文本）",
+      "submitting": "正在提交…",
+      "submit_action": "提交 {{action}}"
+    }
   },
   "scheduler": {
     "title": "调度器",
@@ -1670,8 +1728,28 @@
       "err_path_required": "文件路径必填",
       "err_path_absolute": "文件路径必须是工作区相对路径,不能是绝对路径",
       "err_path_traversal": "文件路径不能包含 '..'",
-      "err_email_required": "收件邮箱必填"
-    }
+      "err_email_required": "收件邮箱必填",
+      "recipient_placeholder": "chat ID / channel ID",
+      "thread_id_placeholder": "Slack thread_ts / Telegram topic",
+      "subject_template_placeholder": "Cron: {job}"
+    },
+    "fired": "已触发",
+    "cooldown": "冷却",
+    "event_pattern": "事件模式",
+    "trigger_prompt_placeholder": "事件触发时发送给智能体的提示模板…",
+    "max_fires": "最大触发次数（0 = 不限制）",
+    "target_agent_optional": "目标智能体（可选）",
+    "same_agent": "同一智能体",
+    "create_trigger": "创建触发器",
+    "edit_trigger": "编辑触发器",
+    "pattern": "模式",
+    "prompt_template": "提示模板",
+    "prompt_sent_placeholder": "事件触发时发送给智能体的提示…",
+    "cooldown_seconds": "冷却（秒，留空 = 无）",
+    "session_mode_default": "会话模式（留空 = 智能体默认）",
+    "agent_default": "智能体默认",
+    "target_agent_owner": "目标智能体（留空 = 所有者）",
+    "owner_default": "所有者（默认）"
   },
   "runtime": {
     "title": "运行时",
@@ -1904,7 +1982,8 @@
     "backup": "备份",
     "export_config_btn": "导出配置",
     "export_config_desc": "将当前配置下载为 TOML 文件。",
-    "export_config_title": "导出配置"
+    "export_config_title": "导出配置",
+    "totp_qr_alt": "TOTP 二维码"
   },
   "config": {
     "desc": "查看和编辑 config.toml 配置项",
@@ -2421,7 +2500,8 @@
     "changes": "未保存的更改",
     "reset_all": "全部重置",
     "reset_section": "重置本节",
-    "searching_all": "搜索所有配置项..."
+    "searching_all": "搜索所有配置项...",
+    "comma_separated_values": "逗号分隔的值"
   },
   "chat": {
     "title": "对话",
@@ -2538,7 +2618,9 @@
     "attachment_drop_hint": "松开以附加",
     "attachment_add": "附加文件",
     "open_agent_picker": "打开智能体选择器",
-    "session_attach_watching": "正在监听"
+    "session_attach_watching": "正在监听",
+    "compacting_session": "正在压缩会话…",
+    "session_summary_compacted": "会话摘要（较早消息已压缩）"
   },
   "goals": {
     "title": "目标",
@@ -3268,7 +3350,8 @@
     "logs_empty": "日志不可用",
     "logs_empty_desc": "尚未公开单服务器 MCP 日志 — 请检查守护进程 stdout 中的连接跟踪。",
     "config_env_notice": "env 变量只按名称引用；连接时从主机环境解析密钥。",
-    "tabs_label": "服务器视图"
+    "tabs_label": "服务器视图",
+    "get_key": "获取密钥"
   },
   "toml_viewer": {
     "tab_toml": "TOML",
@@ -3798,5 +3881,14 @@
     "delete_error": "删除版本失败",
     "create_success": "版本已创建",
     "create_error": "创建版本失败"
+  },
+  "errors": {
+    "something_went_wrong": "出现问题",
+    "unexpected": "发生意外错误。",
+    "force_reload_title": "清除自动重新加载冷却并强制重新加载",
+    "force_reload": "强制重新加载",
+    "stack": "堆栈",
+    "page_not_found": "页面未找到",
+    "go_to_overview": "前往概览"
   }
 }

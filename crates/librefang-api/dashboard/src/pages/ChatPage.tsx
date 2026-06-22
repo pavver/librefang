@@ -1670,12 +1670,13 @@ interface PendingAttachment {
 // messages. Click-to-expand reveals the full summary text; collapsed by default
 // because it can be long and the kept messages are what the user cares about.
 function CompactionSummaryBanner({ summary, isCompacting }: { summary: string | null; isCompacting: boolean }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   if (isCompacting) {
     return (
       <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-brand/10 border border-brand/20 text-xs text-brand font-medium">
         <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
-        <span>Compacting session…</span>
+        <span>{t("chat.compacting_session", { defaultValue: "Compacting session…" })}</span>
       </div>
     );
   }
@@ -1688,7 +1689,7 @@ function CompactionSummaryBanner({ summary, isCompacting }: { summary: string | 
         className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-text-dim hover:text-text transition-colors text-left"
       >
         <Brain className="h-3.5 w-3.5 shrink-0" />
-        <span className="flex-1">Session summary (older messages compacted)</span>
+        <span className="flex-1">{t("chat.session_summary_compacted", { defaultValue: "Session summary (older messages compacted)" })}</span>
         <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform ${expanded ? "rotate-180" : ""}`} />
       </button>
       {expanded && (

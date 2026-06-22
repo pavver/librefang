@@ -1315,7 +1315,7 @@ export function App() {
                 className="hidden sm:inline-flex h-8 items-center gap-1.5 rounded-md border border-border-subtle bg-surface-hover/70 px-2.5 text-xs font-semibold text-text-main hover:border-brand/30 hover:text-brand transition-colors"
               >
                 <Terminal className="h-3.5 w-3.5" />
-                <span className="hidden xl:inline">Console</span>
+                <span className="hidden xl:inline">{t("nav.console", { defaultValue: "Console" })}</span>
               </Link>
             ) : null}
             {/* Avatar button — top-right pattern from the design canvas

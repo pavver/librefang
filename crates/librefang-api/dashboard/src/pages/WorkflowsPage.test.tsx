@@ -577,12 +577,12 @@ describe("WorkflowsPage", () => {
     // actually mounted. Before the round-2 fix this assertion failed —
     // the row was outside `slice(0, 10)` so the inline mount path was
     // unreachable from the banner click.
-    expect(screen.getByText(/Operator review required/i)).toBeInTheDocument();
+    expect(screen.getByText("workflows.operator.review_required")).toBeInTheDocument();
     // The "Approve" action button is unique to the action bar (the
     // banner row only renders an "N actions" count badge, not the
     // buttons themselves), so finding it proves the bar actually
     // rendered its action list, not just the wrapper.
-    expect(screen.getByRole("button", { name: /Approve/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "approvals.approve" })).toBeInTheDocument();
     // The artifact text appears in BOTH the banner row preview and the
     // bar's artifact panel — assert both render so the inline mount
     // path is exercised end-to-end.
@@ -643,7 +643,7 @@ describe("WorkflowsPage", () => {
     fireEvent.click(screen.getByText("paused-run-row"));
     // The bar's hallmark copy renders only when the mount guard passed
     // AND the inspect query produced a pause.
-    expect(screen.getByText(/Operator review required/i)).toBeInTheDocument();
+    expect(screen.getByText("workflows.operator.review_required")).toBeInTheDocument();
     expect(screen.getByText("the draft")).toBeInTheDocument();
   });
 });

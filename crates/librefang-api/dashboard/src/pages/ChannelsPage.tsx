@@ -379,7 +379,7 @@ function DetailsModal({ channel, onClose, t }: {
               opens for already-configured channels. */}
           <div className="p-4 rounded-xl bg-brand/5 border border-brand/20">
             <p className="text-xs text-text-dim">
-              Runs as an out-of-process sidecar adapter. Manage it in <code className="font-mono">config.toml</code> (<code className="font-mono">[[sidecar_channels]]</code>) — Config → Sidecar Channels, or use the gear on the channel card to open the configure drawer.
+              {t("channels.sidecar_details")}
             </p>
           </div>
         </div>

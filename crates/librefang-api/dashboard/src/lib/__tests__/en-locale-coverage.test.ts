@@ -33,11 +33,19 @@ type DynamicKeyPattern = {
   line: number;
 };
 
+type HardcodedText = {
+  text: string;
+  kind: string;
+  path: string;
+  line: number;
+};
+
 type I18nUsage = {
   keys: UsedKey[];
   looseKeys: UsedKey[];
   dynamicPatterns: DynamicKeyPattern[];
   defaultedKeys: DefaultedKey[];
+  hardcodedTexts: HardcodedText[];
 };
 
 let usageCache: I18nUsage | null = null;
@@ -120,6 +128,7 @@ function collectI18nUsage(): I18nUsage {
   const looseKeys: UsedKey[] = [];
   const dynamicPatterns: DynamicKeyPattern[] = [];
   const defaultedKeys: DefaultedKey[] = [];
+  const hardcodedTexts: HardcodedText[] = [];
 
   for (const file of sourceFiles(SRC_DIR)) {
     const text = readFileSync(file, "utf8");
@@ -183,6 +192,16 @@ function collectI18nUsage(): I18nUsage {
       });
     }
 
+    function addHardcodedText(text: string, kind: string, node: ts.Node) {
+      const { line } = source.getLineAndCharacterOfPosition(node.getStart());
+      hardcodedTexts.push({
+        text,
+        kind,
+        path: relative(SRC_DIR, file),
+        line: line + 1,
+      });
+    }
+
     function visit(node: ts.Node) {
       const literalKey = stringLiteralText(node);
       if (literalKey && isLikelyLocaleKey(literalKey)) {
@@ -227,13 +246,37 @@ function collectI18nUsage(): I18nUsage {
         addKey(node.initializer.text, node.initializer);
       }
 
+      if (ts.isJsxText(node)) {
+        addHardcodedText(node.getText(source), "jsx-text", node);
+      }
+
+      if (
+        ts.isJsxAttribute(node) &&
+        ts.isIdentifier(node.name) &&
+        ["aria-label", "title", "placeholder", "alt"].includes(node.name.text) &&
+        node.initializer &&
+        ts.isStringLiteral(node.initializer)
+      ) {
+        addHardcodedText(
+          node.initializer.text,
+          `jsx-attr:${node.name.text}`,
+          node.initializer,
+        );
+      }
+
       ts.forEachChild(node, visit);
     }
 
     visit(source);
   }
 
-  usageCache = { keys, looseKeys, dynamicPatterns, defaultedKeys };
+  usageCache = {
+    keys,
+    looseKeys,
+    dynamicPatterns,
+    defaultedKeys,
+    hardcodedTexts,
+  };
   return usageCache;
 }
 
@@ -252,6 +295,44 @@ function keyMatchesDynamicUsage(
   dynamicPatterns: DynamicKeyPattern[],
 ): boolean {
   return dynamicPatterns.some(({ pattern }) => pattern.test(key));
+}
+
+function normalizeJsxText(value: string): string {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function isTechnicalLiteral(text: string): boolean {
+  if (text === "") return true;
+  if (text === "×") return true;
+  if (!/\p{L}/u.test(text)) return true;
+  if (/^&[a-z]+;$/.test(text)) return true;
+  if (/^(⌘|Ctrl\+|ESC|↑↓|↵)/.test(text)) return true;
+  if (/^librefang\b/.test(text)) return true;
+  if (/^(GET|POST|PUT|PATCH|DELETE) \//.test(text)) return true;
+  if (/^[A-Z][A-Za-z0-9]+(?:[A-Z][A-Za-z0-9]+)+$/.test(text)) return true;
+  if (/^(in \/|out tokens|\/ M)$/.test(text)) return true;
+  if (/^[·•›→—-]\s*[\w./:$?&=%#{}()[\]@+-]+$/.test(text)) return true;
+  if (/^[A-Z0-9_./:$?&=%#{}()[\]@+-]+$/.test(text)) return true;
+  if (/^[a-z0-9_./:$?&=%#{}()[\]@+-]+$/.test(text)) return true;
+  if (/^https?:\/\//.test(text)) return true;
+  if (/^\/[\w./-]+$/.test(text)) return true;
+  if (/^[\w.-]+@[\w.-]+$/.test(text)) return true;
+  if (/^[\w./:-]+(\s*,\s*[\w./:-]+)+$/.test(text)) return true;
+  return false;
+}
+
+function isAllowedHardcodedText(text: string, kind: string): boolean {
+  if (isTechnicalLiteral(text)) return true;
+  if (kind === "jsx-attr:placeholder" && /^e\.g\. [\w./:"{}* -]+$/.test(text)) {
+    return true;
+  }
+  if (
+    kind === "jsx-attr:placeholder" &&
+    /^(gpt-|GPT-|OPENAI_|UTC$|none$|main$|daily-|my-|platform_id$|tool_name$|\$\.|Bearer )/.test(text)
+  ) {
+    return true;
+  }
+  return false;
 }
 
 describe("Dashboard locale coverage", () => {
@@ -333,6 +414,26 @@ describe("Dashboard locale coverage", () => {
     expect(
       conflicts,
       "A single i18n key should not carry multiple literal fallback strings.",
+    ).toEqual([]);
+  });
+
+  it("does not hardcode user-facing JSX text", () => {
+    const hardcoded = collectI18nUsage().hardcodedTexts
+      .map(({ text, kind, path, line }) => ({
+        text: normalizeJsxText(text),
+        kind,
+        path,
+        line,
+      }))
+      .filter(({ text, kind }) => !isAllowedHardcodedText(text, kind))
+      .map(({ text, kind, path, line }) => {
+        return `${path}:${line} ${kind} ${JSON.stringify(text)}`;
+      })
+      .sort();
+
+    expect(
+      hardcoded,
+      "Dashboard JSX contains hardcoded user-facing text. Route it through t(...).",
     ).toEqual([]);
   });
 

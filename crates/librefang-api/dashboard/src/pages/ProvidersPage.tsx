@@ -1316,6 +1316,7 @@ function CredentialPoolCard({ pool }: { pool: CredentialPoolStatus }) {
 }
 
 function CredentialPoolsSection() {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useCredentialPools();
 
   // Hide the section entirely when no pools are configured — it's a niche
@@ -1330,11 +1331,11 @@ function CredentialPoolsSection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Key className="w-4 h-4 text-blue-500" />
-          <h3 className="text-sm font-bold text-text-main">Credential pools</h3>
+          <h3 className="text-sm font-bold text-text-main">{t("providers.credential_pools", { defaultValue: "Credential pools" })}</h3>
           <Badge variant="info">{data.length}</Badge>
         </div>
         <span className="text-[10px] text-text-dim font-mono">
-          configure in config.toml `[[credential_pools]]`
+          {t("providers.credential_pools_hint", { defaultValue: "configure in config.toml `[[credential_pools]]`" })}
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1799,7 +1800,7 @@ export function ProvidersPage() {
 
             {config.provider.key_required !== false && (
               <div>
-                <label htmlFor={`${cfgFieldId}-api-key`} className="text-[10px] font-bold text-text-dim uppercase">API Key</label>
+                <label htmlFor={`${cfgFieldId}-api-key`} className="text-[10px] font-bold text-text-dim uppercase">{t("providers.api_key", { defaultValue: "API Key" })}</label>
                 <input id={`${cfgFieldId}-api-key`} type="password" value={config.keyInput} onChange={e => config.setKeyInput(e.target.value)}
                   placeholder={config.hasStoredKey ? t("providers.key_placeholder_existing") : t("providers.key_placeholder")}
                   className="mt-1 w-full rounded-xl border border-border-subtle bg-main px-3 py-2 text-sm font-mono outline-none focus:border-brand focus:ring-1 focus:ring-brand/20" />
@@ -1807,7 +1808,7 @@ export function ProvidersPage() {
             )}
 
             <div>
-              <label htmlFor={`${cfgFieldId}-base-url`} className="text-[10px] font-bold text-text-dim uppercase">Base URL <span className="normal-case font-normal text-text-dim/50">({t("providers.optional")})</span></label>
+              <label htmlFor={`${cfgFieldId}-base-url`} className="text-[10px] font-bold text-text-dim uppercase">{t("providers.base_url", { defaultValue: "Base URL" })} <span className="normal-case font-normal text-text-dim/50">({t("providers.optional")})</span></label>
               <input id={`${cfgFieldId}-base-url`} type="text" value={config.urlInput} onChange={e => config.setUrlInput(e.target.value)}
                 placeholder="https://api.example.com/v1"
                 className="mt-1 w-full rounded-xl border border-border-subtle bg-main px-3 py-2 text-sm font-mono outline-none focus:border-brand focus:ring-1 focus:ring-brand/20" />

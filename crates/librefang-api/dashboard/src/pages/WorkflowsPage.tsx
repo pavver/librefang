@@ -948,7 +948,7 @@ export function WorkflowsPage() {
                         {lastRun.state}
                       </span>
                     ) : (
-                      <span className="font-mono text-[10px] text-text-dim/40">no runs</span>
+                      <span className="font-mono text-[10px] text-text-dim/40">{t("workflows.no_runs", { defaultValue: "no runs" })}</span>
                     )}
                   </div>
 
@@ -960,7 +960,7 @@ export function WorkflowsPage() {
                         <span className="truncate">{schedule.cron}</span>
                       </span>
                     ) : (
-                      <span className="font-mono text-[10px] text-text-dim/40">no schedule</span>
+                      <span className="font-mono text-[10px] text-text-dim/40">{t("workflows.no_schedule", { defaultValue: "no schedule" })}</span>
                     )}
                   </div>
 

@@ -49,7 +49,8 @@
     "open_menu": "Open navigation menu",
     "skip_to_content": "Skip to content",
     "more": "More",
-    "mobile_tabs": "Bottom navigation"
+    "mobile_tabs": "Bottom navigation",
+    "console": "Console"
   },
   "common": {
     "copied": "Copied",
@@ -170,7 +171,9 @@
     "size": "Size",
     "path": "Path",
     "select_options": "Select options",
-    "error_loading_data": "Failed to load memories"
+    "error_loading_data": "Failed to load memories",
+    "reload": "Reload",
+    "save_changes": "Save changes"
   },
   "status": {
     "active": "Active",
@@ -483,7 +486,9 @@
       "quiet_hours_placeholder": "0 22 * * *",
       "simple_threshold_placeholder": "512",
       "complex_threshold_placeholder": "2048",
-      "schema_name_placeholder": "my_schema"
+      "schema_name_placeholder": "my_schema",
+      "remove_fallback": "remove fallback",
+      "remove_context_injection": "remove context injection"
     },
     "delete_confirm": "Are you sure you want to delete agent \"{{name}}\"?",
     "prompts": "Prompts",
@@ -817,7 +822,11 @@
     "select_an_agent_hint": "Choose an agent on the left to inspect its sessions, memory, skills, and live logs.",
     "tools_declared_count": "declared",
     "tools_declared_title": "Declared Tools",
-    "tools_declared_desc": "Tools this agent can use. Leave empty for unrestricted access to all tools."
+    "tools_declared_desc": "Tools this agent can use. Leave empty for unrestricted access to all tools.",
+    "providers_error_loading": "Error loading",
+    "no_providers": "No providers",
+    "select_provider_first": "Select provider first",
+    "no_models": "No models"
   },
   "providers": {
     "title": "Providers",
@@ -928,7 +937,9 @@
     "reenabled": "Provider re-enabled",
     "batch_test_all_failed": "All tests failed",
     "reenable": "Re-enable",
-    "batch_test_partial": "{{success}} passed, {{failed}} failed"
+    "batch_test_partial": "{{success}} passed, {{failed}} failed",
+    "credential_pools": "Credential pools",
+    "credential_pools_hint": "configure in config.toml `[[credential_pools]]`"
   },
   "channels": {
     "add": "Add",
@@ -968,7 +979,8 @@
     "configured": "configured",
     "login_success": "Login successful",
     "qr_failed": "QR login failed",
-    "qr_login": "QR Login"
+    "qr_login": "QR Login",
+    "sidecar_details": "Runs as an out-of-process sidecar adapter. Manage it in config.toml ([[sidecar_channels]]) — Config → Sidecar Channels, or use the gear on the channel card to open the configure drawer."
   },
   "skills": {
     "title": "Skills",
@@ -1074,7 +1086,35 @@
     "propose_registry_hint": "Open a PR contributing this skill to the public registry (requires GitHub token)",
     "search_to_explore": "Type to search across hubs",
     "propose_registry_confirm": "Open a pull request contributing {{name}} to the public skill registry?",
-    "propose_registry_opened": "Pull request opened: {{pr_url}}"
+    "propose_registry_opened": "Pull request opened: {{pr_url}}",
+    "copy_command": "Copy command",
+    "copy_install_command": "Copy install command",
+    "pending_source_explicit": "Explicit instruction",
+    "pending_source_correction": "User correction",
+    "pending_source_repeated_tool": "Repeated tool pattern",
+    "pending_proposed_changes": "Proposed changes",
+    "pending_loading_current_body": "Loading current skill body…",
+    "pending_current_body_failed": "Could not load current skill body to diff:",
+    "pending_unknown": "unknown",
+    "pending_no_diff": "No differences between the current and proposed body.",
+    "pending_update": "Update",
+    "pending_captured": "Captured",
+    "pending_agent": "agent",
+    "pending_user_message_excerpt": "User message excerpt",
+    "pending_assistant_response_excerpt": "Assistant response excerpt",
+    "pending_body_draft": "Body draft",
+    "pending_approving": "Approving…",
+    "pending_propose_registry_title": "Open a PR contributing this draft to the public skill registry",
+    "pending_proposing": "Proposing…",
+    "pending_approve_failed": "Approve failed:",
+    "pending_propose_failed": "Propose to registry failed:",
+    "pending_pr_opened": "Pull request opened:",
+    "pending_reject_title": "Reject candidate?",
+    "pending_rejecting": "Rejecting…",
+    "pending_title": "Skill workshop pending",
+    "pending_load_failed": "Failed to load pending candidates:",
+    "pending_unknown_error": "unknown error",
+    "pending_desc": "Drafts captured from agent conversations awaiting your review (#3328)."
   },
   "hands": {
     "title": "Hands",
@@ -1141,7 +1181,9 @@
     "reset_default_title": "Restore the value shipped in this hand's HAND.toml",
     "save": "Save",
     "saved": "Saved",
-    "edit_agent_unavailable": "Agent not found for this role — try reloading."
+    "edit_agent_unavailable": "Agent not found for this role — try reloading.",
+    "details": "Hand details",
+    "delete_schedule": "Delete schedule"
   },
   "analytics": {
     "title": "Analytics",
@@ -1561,7 +1603,23 @@
     "no_templates_match": "No templates match.",
     "no_match": "No workflows match.",
     "selected_review": "Selected review",
-    "from_review_banner": "from review banner"
+    "from_review_banner": "from review banner",
+    "no_runs": "no runs",
+    "no_schedule": "no schedule",
+    "operator": {
+      "loading": "Loading operator review…",
+      "unavailable": "Operator pause unavailable:",
+      "resolve_failed": "Failed to resolve operator step",
+      "review_required": "Operator review required",
+      "paused": "Paused",
+      "step": "step",
+      "artifact": "Artifact",
+      "freeform_input": "Freeform input",
+      "provide_field": "Provide '{{field}}'",
+      "response_placeholder": "Your response (text)",
+      "submitting": "Submitting…",
+      "submit_action": "Submit {{action}}"
+    }
   },
   "scheduler": {
     "title": "Scheduler",
@@ -1670,8 +1728,28 @@
       "err_path_required": "File path is required",
       "err_path_absolute": "File path must be workspace-relative, not absolute",
       "err_path_traversal": "File path must not contain '..'",
-      "err_email_required": "Recipient email is required"
-    }
+      "err_email_required": "Recipient email is required",
+      "recipient_placeholder": "chat ID / channel ID",
+      "thread_id_placeholder": "Slack thread_ts / Telegram topic",
+      "subject_template_placeholder": "Cron: {job}"
+    },
+    "fired": "Fired",
+    "cooldown": "Cooldown",
+    "event_pattern": "Event pattern",
+    "trigger_prompt_placeholder": "Prompt template sent to the agent when the event fires…",
+    "max_fires": "Max fires (0 = unlimited)",
+    "target_agent_optional": "Target agent (optional)",
+    "same_agent": "Same agent",
+    "create_trigger": "Create trigger",
+    "edit_trigger": "Edit trigger",
+    "pattern": "Pattern",
+    "prompt_template": "Prompt template",
+    "prompt_sent_placeholder": "Prompt sent to the agent when the event fires…",
+    "cooldown_seconds": "Cooldown (seconds, blank = none)",
+    "session_mode_default": "Session mode (blank = agent default)",
+    "agent_default": "agent default",
+    "target_agent_owner": "Target agent (blank = owner)",
+    "owner_default": "owner (default)"
   },
   "runtime": {
     "title": "Runtime",
@@ -1938,7 +2016,8 @@
     "backup": "Backup",
     "export_config_btn": "Export Config",
     "export_config_desc": "Download your current configuration as a TOML file.",
-    "export_config_title": "Export Configuration"
+    "export_config_title": "Export Configuration",
+    "totp_qr_alt": "TOTP QR Code"
   },
   "config": {
     "desc": "System configuration editor",
@@ -2455,7 +2534,8 @@
     "changes": "Unsaved changes",
     "reset_all": "Reset all",
     "reset_section": "Reset section",
-    "searching_all": "Searching all sections..."
+    "searching_all": "Searching all sections...",
+    "comma_separated_values": "comma-separated values"
   },
   "chat": {
     "title": "Chat",
@@ -2572,7 +2652,9 @@
     "attachment_drop_hint": "Drop to attach",
     "attachment_add": "Attach file",
     "open_agent_picker": "Open agent picker",
-    "session_attach_watching": "Watching"
+    "session_attach_watching": "Watching",
+    "compacting_session": "Compacting session…",
+    "session_summary_compacted": "Session summary (older messages compacted)"
   },
   "goals": {
     "title": "Goals",
@@ -3268,7 +3350,8 @@
     "logs_empty": "Logs not available",
     "logs_empty_desc": "Per-server MCP logs aren't exposed yet — check the daemon's stdout for connection traces.",
     "config_env_notice": "env vars are referenced by name only; secrets resolved from the host environment at connect-time.",
-    "tabs_label": "Server views"
+    "tabs_label": "Server views",
+    "get_key": "Get key"
   },
   "toml_viewer": {
     "tab_toml": "TOML",
@@ -3798,5 +3881,14 @@
     "delete_error": "Failed to delete version",
     "create_success": "Version created",
     "create_error": "Failed to create version"
+  },
+  "errors": {
+    "something_went_wrong": "Something went wrong",
+    "unexpected": "An unexpected error occurred.",
+    "force_reload_title": "Clears the auto-reload cooldown and forces a fresh load",
+    "force_reload": "Force reload",
+    "stack": "stack",
+    "page_not_found": "Page not found",
+    "go_to_overview": "Go to Overview"
   }
 }

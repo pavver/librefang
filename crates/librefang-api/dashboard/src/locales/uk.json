@@ -49,7 +49,8 @@
     "open_menu": "Відкрити навігаційне меню",
     "skip_to_content": "Перейти до вмісту",
     "more": "Більше",
-    "mobile_tabs": "Нижня навігація"
+    "mobile_tabs": "Нижня навігація",
+    "console": "Консоль"
   },
   "common": {
     "copied": "Скопійовано",
@@ -170,7 +171,9 @@
     "size": "Розмір",
     "path": "Шлях",
     "error_loading_data": "Не вдалося завантажити пам'ять",
-    "select_options": "Виберіть опції"
+    "select_options": "Виберіть опції",
+    "reload": "Перезавантажити",
+    "save_changes": "Зберегти зміни"
   },
   "status": {
     "active": "Активний",
@@ -483,7 +486,9 @@
       "quiet_hours_placeholder": "0 22 * * *",
       "simple_threshold_placeholder": "512",
       "complex_threshold_placeholder": "2048",
-      "schema_name_placeholder": "my_schema"
+      "schema_name_placeholder": "my_schema",
+      "remove_fallback": "видалити fallback",
+      "remove_context_injection": "видалити інʼєкцію контексту"
     },
     "delete_confirm": "Ви впевнені, що хочете видалити агента \"{{name}}\"?",
     "prompts": "Промпти",
@@ -817,7 +822,11 @@
     },
     "tools_declared_count": "оголошено",
     "tools_declared_desc": "Інструменти, які може використовувати цей агент. Залиште порожнім для необмеженого доступу до всіх інструментів.",
-    "tools_declared_title": "Оголошені інструменти"
+    "tools_declared_title": "Оголошені інструменти",
+    "providers_error_loading": "Помилка завантаження",
+    "no_providers": "Немає провайдерів",
+    "select_provider_first": "Спочатку оберіть провайдера",
+    "no_models": "Немає моделей"
   },
   "providers": {
     "title": "Провайдери",
@@ -928,7 +937,9 @@
     "batch_test_all_failed": "Усі тести не вдалися",
     "batch_test_partial": "{{success}} пройшло, {{failed}} не вдалося",
     "reenable": "Увімкнути знову",
-    "reenabled": "Провайдера знову увімкнено"
+    "reenabled": "Провайдера знову увімкнено",
+    "credential_pools": "Пули облікових даних",
+    "credential_pools_hint": "налаштовується в config.toml `[[credential_pools]]`"
   },
   "channels": {
     "add": "Додати",
@@ -968,7 +979,8 @@
     "configured": "налаштовано",
     "login_success": "Вхід успішний",
     "qr_failed": "QR-вхід не вдався",
-    "qr_login": "QR-вхід"
+    "qr_login": "QR-вхід",
+    "sidecar_details": "Запускається як зовнішній sidecar-адаптер. Керуйте ним у config.toml ([[sidecar_channels]]) — Config → Sidecar Channels, або відкрийте drawer налаштування через шестерню на картці каналу."
   },
   "skills": {
     "title": "Скіли",
@@ -1074,7 +1086,35 @@
     "propose_registry_hint": "Відкрити PR із внеском цього скіла до публічного реєстру (потрібен GitHub token)",
     "propose_registry_opened": "Pull request відкрито: {{pr_url}}",
     "search_to_explore": "Введіть текст для пошуку по хабах",
-    "via": "через"
+    "via": "через",
+    "copy_command": "Копіювати команду",
+    "copy_install_command": "Копіювати команду встановлення",
+    "pending_source_explicit": "Явна інструкція",
+    "pending_source_correction": "Виправлення користувача",
+    "pending_source_repeated_tool": "Повторюваний патерн тулів",
+    "pending_proposed_changes": "Запропоновані зміни",
+    "pending_loading_current_body": "Завантаження поточного тіла скіла…",
+    "pending_current_body_failed": "Не вдалося завантажити поточне тіло скіла для diff:",
+    "pending_unknown": "невідомо",
+    "pending_no_diff": "Немає відмінностей між поточним і запропонованим тілом.",
+    "pending_update": "Оновлення",
+    "pending_captured": "Захоплено",
+    "pending_agent": "агент",
+    "pending_user_message_excerpt": "Фрагмент повідомлення користувача",
+    "pending_assistant_response_excerpt": "Фрагмент відповіді асистента",
+    "pending_body_draft": "Чернетка тіла",
+    "pending_approving": "Схвалення…",
+    "pending_propose_registry_title": "Відкрити PR із цією чернеткою до публічного реєстру скілів",
+    "pending_proposing": "Створення пропозиції…",
+    "pending_approve_failed": "Не вдалося схвалити:",
+    "pending_propose_failed": "Не вдалося запропонувати до реєстру:",
+    "pending_pr_opened": "Pull request відкрито:",
+    "pending_reject_title": "Відхилити кандидата?",
+    "pending_rejecting": "Відхилення…",
+    "pending_title": "Очікує Skill workshop",
+    "pending_load_failed": "Не вдалося завантажити кандидатів:",
+    "pending_unknown_error": "невідома помилка",
+    "pending_desc": "Чернетки, захоплені з розмов агентів, очікують вашого перегляду (#3328)."
   },
   "hands": {
     "title": "Hands",
@@ -1141,7 +1181,9 @@
     "reset_default_title": "Відновити значення з файлу HAND.toml цієї Hand",
     "save": "Зберегти",
     "saved": "Збережено",
-    "edit_agent_unavailable": "Агента для цієї ролі не знайдено — спробуйте перезавантажити."
+    "edit_agent_unavailable": "Агента для цієї ролі не знайдено — спробуйте перезавантажити.",
+    "details": "Деталі Hand",
+    "delete_schedule": "Видалити розклад"
   },
   "analytics": {
     "title": "Аналітика",
@@ -1561,7 +1603,23 @@
     "search_templates_placeholder": "Шукати шаблони…",
     "selected_review": "Вибране ревʼю",
     "steps_unit": "кроків",
-    "templates_count_meta": "{{n}} шаблонів"
+    "templates_count_meta": "{{n}} шаблонів",
+    "no_runs": "немає запусків",
+    "no_schedule": "немає розкладу",
+    "operator": {
+      "loading": "Завантаження operator review…",
+      "unavailable": "Operator pause недоступна:",
+      "resolve_failed": "Не вдалося завершити operator step",
+      "review_required": "Потрібен перегляд оператором",
+      "paused": "Призупинено",
+      "step": "крок",
+      "artifact": "Артефакт",
+      "freeform_input": "Вільне введення",
+      "provide_field": "Надати '{{field}}'",
+      "response_placeholder": "Ваша відповідь (текст)",
+      "submitting": "Надсилання…",
+      "submit_action": "Надіслати {{action}}"
+    }
   },
   "scheduler": {
     "title": "Планувальник",
@@ -1670,8 +1728,28 @@
       "err_path_required": "Шлях до файлу є обов'язковим",
       "err_path_absolute": "Шлях до файлу має бути відносним до робочої області, а не абсолютним",
       "err_path_traversal": "Шлях до файлу не повинен містити '..'",
-      "err_email_required": "Email отримувача є обов'язковій"
-    }
+      "err_email_required": "Email отримувача є обов'язковій",
+      "recipient_placeholder": "chat ID / channel ID",
+      "thread_id_placeholder": "Slack thread_ts / тема Telegram",
+      "subject_template_placeholder": "Cron: {job}"
+    },
+    "fired": "Запусків",
+    "cooldown": "Затримка",
+    "event_pattern": "Патерн події",
+    "trigger_prompt_placeholder": "Шаблон промпта, який надсилається агенту, коли спрацьовує подія…",
+    "max_fires": "Макс. запусків (0 = без обмеження)",
+    "target_agent_optional": "Цільовий агент (необовʼязково)",
+    "same_agent": "Той самий агент",
+    "create_trigger": "Створити тригер",
+    "edit_trigger": "Редагувати тригер",
+    "pattern": "Патерн",
+    "prompt_template": "Шаблон промпта",
+    "prompt_sent_placeholder": "Промпт, який надсилається агенту, коли спрацьовує подія…",
+    "cooldown_seconds": "Затримка (секунди, порожньо = немає)",
+    "session_mode_default": "Режим сесії (порожньо = стандарт агента)",
+    "agent_default": "стандарт агента",
+    "target_agent_owner": "Цільовий агент (порожньо = власник)",
+    "owner_default": "власник (стандартно)"
   },
   "runtime": {
     "title": "Рантайм",
@@ -1938,7 +2016,8 @@
     "backup": "Бекап",
     "export_config_btn": "Експортувати конфігурацію",
     "export_config_desc": "Завантажити поточну конфігурацію як TOML-файл.",
-    "export_config_title": "Експортувати конфігурацію"
+    "export_config_title": "Експортувати конфігурацію",
+    "totp_qr_alt": "QR-код TOTP"
   },
   "config": {
     "desc": "Редактор конфігурації системи",
@@ -2455,7 +2534,8 @@
     "changes": "Незбережені зміни",
     "reset_all": "Скинути все",
     "reset_section": "Скинути розділ",
-    "searching_all": "Пошук по всіх розділах..."
+    "searching_all": "Пошук по всіх розділах...",
+    "comma_separated_values": "значення через кому"
   },
   "chat": {
     "title": "Чат",
@@ -2572,7 +2652,9 @@
     "attachment_unsupported_type": "Непідтримуваний тип файлу. Дозволено: зображення, PDF і поширені текстові/код-файли.",
     "attachment_uploading": "Завантаження…",
     "open_agent_picker": "Відкрити вибір агента",
-    "session_attach_watching": "Спостереження"
+    "session_attach_watching": "Спостереження",
+    "compacting_session": "Сесія стискається…",
+    "session_summary_compacted": "Підсумок сесії (старі повідомлення стиснуто)"
   },
   "goals": {
     "title": "Цілі",
@@ -3272,7 +3354,8 @@
     "timeout_secs": "Таймаут",
     "tools_count_short": "{{count}} інструментів",
     "tools_empty": "Інструменти не оголошено",
-    "tools_empty_desc": "Сервер ще не повідомив про інструменти — переконайтесь, що він підключений."
+    "tools_empty_desc": "Сервер ще не повідомив про інструменти — переконайтесь, що він підключений.",
+    "get_key": "Отримати ключ"
   },
   "toml_viewer": {
     "tab_toml": "TOML",
@@ -3804,5 +3887,14 @@
     "delete_error": "Не вдалося видалити версію",
     "create_success": "Версію створено",
     "create_error": "Не вдалося створити версію"
+  },
+  "errors": {
+    "something_went_wrong": "Щось пішло не так",
+    "unexpected": "Сталася неочікувана помилка.",
+    "force_reload_title": "Скидає затримку автоперезавантаження і примусово завантажує заново",
+    "force_reload": "Примусово перезавантажити",
+    "stack": "стек",
+    "page_not_found": "Сторінку не знайдено",
+    "go_to_overview": "Перейти до огляду"
   }
 }

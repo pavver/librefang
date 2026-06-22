@@ -2413,9 +2413,9 @@ export function AgentsPage() {
                             className="w-44 px-2 py-1 rounded-md border border-border-subtle bg-surface text-sm font-mono outline-none focus:border-brand text-right"
                             disabled={providersQuery.isLoading}
                           >
-                            {providersQuery.isLoading && <option value="">Loading...</option>}
-                            {providersQuery.error && <option value="">Error loading</option>}
-                            {!providersQuery.isLoading && configuredProviders.length === 0 && <option value="">No providers</option>}
+                            {providersQuery.isLoading && <option value="">{t("common.loading", { defaultValue: "Loading..." })}</option>}
+                            {providersQuery.error && <option value="">{t("agents.providers_error_loading", { defaultValue: "Error loading" })}</option>}
+                            {!providersQuery.isLoading && configuredProviders.length === 0 && <option value="">{t("agents.no_providers", { defaultValue: "No providers" })}</option>}
                             {modelDraft.provider && !configuredProviders.some(p => p.id === modelDraft.provider) && (
                               <option value={modelDraft.provider}>{modelDraft.provider}</option>
                             )}
@@ -2431,9 +2431,9 @@ export function AgentsPage() {
                             className="w-44 px-2 py-1 rounded-md border border-border-subtle bg-surface text-sm font-mono outline-none focus:border-brand text-right"
                             disabled={modelsQuery.isLoading || !modelDraft.provider.trim()}
                           >
-                            {!modelDraft.provider.trim() && <option value="">Select provider first</option>}
-                            {modelDraft.provider.trim() && modelsQuery.isLoading && <option value="">Loading...</option>}
-                            {modelDraft.provider.trim() && !modelsQuery.isLoading && visibleModels.length === 0 && <option value="">No models</option>}
+                            {!modelDraft.provider.trim() && <option value="">{t("agents.select_provider_first", { defaultValue: "Select provider first" })}</option>}
+                            {modelDraft.provider.trim() && modelsQuery.isLoading && <option value="">{t("common.loading", { defaultValue: "Loading..." })}</option>}
+                            {modelDraft.provider.trim() && !modelsQuery.isLoading && visibleModels.length === 0 && <option value="">{t("agents.no_models", { defaultValue: "No models" })}</option>}
                             {modelDraft.model && !visibleModels.some(m => m.id === modelDraft.model) && (
                               <option value={modelDraft.model}>{modelDraft.model}</option>
                             )}
