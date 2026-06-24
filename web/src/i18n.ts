@@ -196,6 +196,104 @@ export interface Translation {
     install: string
     dismiss: string
   }
+  common?: {
+    copy: string
+    copied: string
+    copyToClipboard: string
+    loadingReleases: string
+    skipToContent: string
+    backToTop: string
+    viewFull: string
+    contributors: string
+    agentOs: string
+    breadcrumb: string
+  }
+  header?: {
+    toggleTheme: string
+    viewSource: string
+    source: string
+    switchLanguage: string
+    switchLanguageNamed: string
+    toggleMenu: string
+  }
+  errorBoundary?: {
+    label: string
+    title: string
+    reload: string
+    home: string
+  }
+  metrics?: {
+    breadcrumb: string
+    label: string
+    title: string
+    desc: string
+    loadError: string
+    totalClicks: string
+    uniqueItems: string
+    activeCategories: string
+    generated: string
+    perCategory: string
+    topItems: string
+    items: string
+    clicks: string
+  }
+  deploy?: {
+    title: string
+    subtitle: string
+    terminalIntro: string
+    installLocally: string
+    website: string
+    copyrightSuffix: string
+    backToPlatforms: string
+    badges: string[]
+    tokenRequired: string
+    deployFailed: string
+    deploying: string
+    deployToFly: string
+    deployed: string
+    deployedDesc: string
+    openDashboard: string
+    flyConsole: string
+    app: string
+    region: string
+    model: string
+    includedModel: string
+    upgradeModel: string
+    freeNote: string
+    stepOneTitle: string
+    stepOnePrefix: string
+    signUp: string
+    or: string
+    logIn: string
+    stepOneMiddle: string
+    personalAccessTokens: string
+    stepOneSuffix: string
+    stepTwoTitle: string
+    stepTwoDesc: string
+    tokenLabel: string
+    troubleshooting: string
+    platforms: Record<string, { desc: string; badge?: string; demo?: string; warning?: string }>
+    localInstalls: Record<string, { name: string; desc: string }>
+    steps: Record<string, string>
+    troubleshootingItems: Record<string, { q: string; a: string }>
+  }
+  changelog?: {
+    title: string
+    desc: string
+    backHome: string
+    releases: string
+    downloads: string
+    loading: string
+    loadError: string
+    unknownError: string
+    empty: string
+    noFilterMatches: string
+    fullNotes: string
+    viewOnGitHub: string
+    filters: Record<'all' | 'stable' | 'prerelease', string>
+    releaseTypes: Record<'stable' | 'rc' | 'beta', string>
+    changeTypes: Record<'feature' | 'fix' | 'breaking' | 'performance' | 'other', string>
+  }
   footer: { docs: string; license: string; privacy: string; changelog: string }
 }
 
@@ -758,6 +856,139 @@ export const translations: Record<string, Translation> = {
       desc: 'Add the site to your home screen or dock.',
       install: 'Install',
       dismiss: 'Dismiss',
+    },
+    common: {
+      copy: 'Copy',
+      copied: 'Copied!',
+      copyToClipboard: 'Copy to clipboard',
+      loadingReleases: 'Loading releases...',
+      skipToContent: 'Skip to content',
+      backToTop: 'Back to top',
+      viewFull: 'View Full',
+      contributors: 'Contributors',
+      agentOs: 'Agent OS',
+      breadcrumb: 'Breadcrumb',
+    },
+    header: {
+      toggleTheme: 'Toggle theme',
+      viewSource: 'View source on GitHub',
+      source: 'Source',
+      switchLanguage: 'Switch language',
+      switchLanguageNamed: 'Switch language ({name})',
+      toggleMenu: 'Toggle menu',
+    },
+    errorBoundary: {
+      label: 'Runtime error',
+      title: 'Something went wrong.',
+      reload: 'Reload',
+      home: 'Home',
+    },
+    metrics: {
+      breadcrumb: 'Metrics',
+      label: 'Registry Metrics',
+      title: 'Click telemetry',
+      desc: 'Aggregate counts of detail-page views across the registry, recorded via the /api/registry/click worker endpoint.',
+      loadError: 'Could not load metrics',
+      totalClicks: 'Total clicks',
+      uniqueItems: 'Unique items',
+      activeCategories: 'Active categories',
+      generated: 'Generated',
+      perCategory: 'Per category',
+      topItems: 'Top items overall',
+      items: 'items',
+      clicks: 'clicks',
+    },
+    deploy: {
+      title: 'Deploy LibreFang',
+      subtitle: 'Choose your platform',
+      terminalIntro: 'Or deploy from your terminal:',
+      installLocally: 'Install locally',
+      website: 'Website',
+      copyrightSuffix: 'Agent Operating System',
+      backToPlatforms: 'Back to platforms',
+      badges: ['Free LLM included', 'No API key needed', '1 GB storage'],
+      tokenRequired: 'Please enter your Fly.io API Token.',
+      deployFailed: 'Deployment failed',
+      deploying: 'Deploying...',
+      deployToFly: 'Deploy to Fly.io',
+      deployed: 'Deployed!',
+      deployedDesc: 'Your LibreFang instance is starting up (1-2 min). Free LLM (Step 3.5 Flash) is pre-configured and ready to use.',
+      openDashboard: 'Open Dashboard',
+      flyConsole: 'Fly.io Console',
+      app: 'App',
+      region: 'Region',
+      model: 'Model',
+      includedModel: 'Step 3.5 Flash (free)',
+      upgradeModel: 'Upgrade model',
+      freeNote: 'A free LLM (Step 3.5 Flash via OpenRouter) is pre-configured. Your instance works out of the box — no API keys required.',
+      stepOneTitle: 'Get a Fly.io API Token',
+      stepOnePrefix: '',
+      signUp: 'Sign up',
+      or: 'or',
+      logIn: 'log in',
+      stepOneMiddle: 'to Fly.io, then go to',
+      personalAccessTokens: 'Personal Access Tokens',
+      stepOneSuffix: 'and create a new token.',
+      stepTwoTitle: 'Paste and deploy',
+      stepTwoDesc: 'Your token is only sent to the Fly.io API and is never stored on our servers.',
+      tokenLabel: 'Fly.io API Token',
+      troubleshooting: 'Troubleshooting',
+      platforms: {
+        flyio: { desc: 'Free forever, persistent storage', badge: 'Recommended', demo: 'Live Demo' },
+        render: { desc: 'One-click OAuth deploy', badge: 'Easiest', demo: 'Live Demo', warning: 'Free tier: sleeps after 15 min, no persistent storage' },
+        railway: { desc: 'Simple deploy with $5 free credit' },
+        gcp: { desc: 'Free forever (e2-micro), 30GB storage', badge: 'Terraform' },
+        docker: { desc: 'One command, runs anywhere' },
+      },
+      localInstalls: {
+        macos: { name: 'macOS', desc: 'Homebrew or download binary' },
+        linux: { name: 'Linux', desc: 'Install script or download binary' },
+        windows: { name: 'Windows', desc: 'PowerShell installer or .msi' },
+      },
+      steps: {
+        auth: 'Verifying token...',
+        app: 'Creating app...',
+        net: 'Allocating IP addresses...',
+        vol: 'Creating persistent volume...',
+        machine: 'Launching machine with Step 3.5 Flash...',
+      },
+      troubleshootingItems: {
+        sso: {
+          q: 'Cannot create Personal Access Token (SSO error)',
+          a: 'If you see: "Access Tokens cannot be created because an organization requires SSO" Use a per-org token instead. Run in your terminal: flyctl tokens org <your-org-name> Then paste the generated token above.',
+        },
+        image: {
+          q: 'Deploy failed: image not found',
+          a: 'The Docker image ghcr.io/librefang/librefang:latest is built on each release. If no release has been published yet, use the terminal deploy script below — it builds from source.',
+        },
+        llm: {
+          q: 'How to add or change LLM provider after deploy?',
+          a: 'Run flyctl secrets set OPENAI_API_KEY=sk-... --app your-app-name. Then edit /data/config.toml via flyctl ssh console to update the default model.',
+        },
+      },
+    },
+    changelog: {
+      title: 'Changelog',
+      desc: 'Track every update to LibreFang',
+      backHome: 'Back to home',
+      releases: 'releases',
+      downloads: 'downloads',
+      loading: 'Loading releases...',
+      loadError: 'Failed to load releases',
+      unknownError: 'Unknown error',
+      empty: 'No releases found.',
+      noFilterMatches: 'No releases match the current filter.',
+      fullNotes: 'See full release notes on GitHub.',
+      viewOnGitHub: 'View on GitHub',
+      filters: { all: 'All', stable: 'Stable', prerelease: 'Pre-release' },
+      releaseTypes: { stable: 'Stable', rc: 'RC', beta: 'Beta' },
+      changeTypes: {
+        feature: 'Added',
+        fix: 'Fixed',
+        breaking: 'Breaking',
+        performance: 'Performance',
+        other: 'Other',
+      },
     },
     footer: { docs: 'Docs', license: 'License', privacy: 'Privacy', changelog: 'Changelog' },
   },
@@ -2529,6 +2760,139 @@ translations.uk = {
     desc: 'Додайте сайт на головний екран або в dock.',
     install: 'Встановити',
     dismiss: 'Закрити',
+  },
+  common: {
+    copy: 'Копіювати',
+    copied: 'Скопійовано!',
+    copyToClipboard: 'Копіювати в буфер',
+    loadingReleases: 'Завантаження релізів...',
+    skipToContent: 'Перейти до вмісту',
+    backToTop: 'Нагору',
+    viewFull: 'Переглянути повністю',
+    contributors: 'Учасники',
+    agentOs: 'ОС для агентів',
+    breadcrumb: 'Навігаційний ланцюжок',
+  },
+  header: {
+    toggleTheme: 'Перемкнути тему',
+    viewSource: 'Переглянути джерело на GitHub',
+    source: 'Джерело',
+    switchLanguage: 'Змінити мову',
+    switchLanguageNamed: 'Змінити мову ({name})',
+    toggleMenu: 'Перемкнути меню',
+  },
+  errorBoundary: {
+    label: 'Помилка виконання',
+    title: 'Щось пішло не так.',
+    reload: 'Перезавантажити',
+    home: 'На головну',
+  },
+  metrics: {
+    breadcrumb: 'Метрики',
+    label: 'Метрики реєстру',
+    title: 'Телеметрія кліків',
+    desc: 'Агреговані лічильники переглядів сторінок деталей у реєстрі, записані через endpoint worker /api/registry/click.',
+    loadError: 'Не вдалося завантажити метрики',
+    totalClicks: 'Усього кліків',
+    uniqueItems: 'Унікальні елементи',
+    activeCategories: 'Активні категорії',
+    generated: 'Згенеровано',
+    perCategory: 'За категоріями',
+    topItems: 'Найпопулярніші елементи',
+    items: 'елементів',
+    clicks: 'кліків',
+  },
+  deploy: {
+    title: 'Розгорнути LibreFang',
+    subtitle: 'Оберіть платформу',
+    terminalIntro: 'Або розгорніть із термінала:',
+    installLocally: 'Встановити локально',
+    website: 'Сайт',
+    copyrightSuffix: 'Операційна система для агентів',
+    backToPlatforms: 'Назад до платформ',
+    badges: ['Безкоштовна LLM включена', 'API-ключ не потрібен', '1 ГБ сховища'],
+    tokenRequired: 'Введіть API-токен Fly.io.',
+    deployFailed: 'Розгортання не вдалося',
+    deploying: 'Розгортання...',
+    deployToFly: 'Розгорнути на Fly.io',
+    deployed: 'Розгорнуто!',
+    deployedDesc: 'Ваш екземпляр LibreFang запускається (1-2 хв). Безкоштовна LLM (Step 3.5 Flash) уже налаштована й готова до використання.',
+    openDashboard: 'Відкрити панель',
+    flyConsole: 'Консоль Fly.io',
+    app: 'Застосунок',
+    region: 'Регіон',
+    model: 'Модель',
+    includedModel: 'Step 3.5 Flash (безкоштовно)',
+    upgradeModel: 'Оновити модель',
+    freeNote: 'Безкоштовна LLM (Step 3.5 Flash через OpenRouter) уже налаштована. Ваш екземпляр працює одразу — API-ключі не потрібні.',
+    stepOneTitle: 'Отримайте API-токен Fly.io',
+    stepOnePrefix: '',
+    signUp: 'Зареєструйтесь',
+    or: 'або',
+    logIn: 'увійдіть',
+    stepOneMiddle: 'у Fly.io, потім перейдіть до',
+    personalAccessTokens: 'Personal Access Tokens',
+    stepOneSuffix: 'і створіть новий токен.',
+    stepTwoTitle: 'Вставте токен і розгорніть',
+    stepTwoDesc: 'Ваш токен надсилається лише до API Fly.io і ніколи не зберігається на наших серверах.',
+    tokenLabel: 'API-токен Fly.io',
+    troubleshooting: 'Усунення проблем',
+    platforms: {
+      flyio: { desc: 'Безкоштовно назавжди, постійне сховище', badge: 'Рекомендовано', demo: 'Жива демоверсія' },
+      render: { desc: 'Розгортання OAuth в один клік', badge: 'Найпростіше', demo: 'Жива демоверсія', warning: 'Безкоштовний тариф: засинає після 15 хв, без постійного сховища' },
+      railway: { desc: 'Просте розгортання з $5 безкоштовного кредиту' },
+      gcp: { desc: 'Безкоштовно назавжди (e2-micro), 30 ГБ сховища', badge: 'Terraform' },
+      docker: { desc: 'Одна команда, працює будь-де' },
+    },
+    localInstalls: {
+      macos: { name: 'macOS', desc: 'Homebrew або завантаження binary' },
+      linux: { name: 'Linux', desc: 'Скрипт встановлення або завантаження binary' },
+      windows: { name: 'Windows', desc: 'Інсталятор PowerShell або .msi' },
+    },
+    steps: {
+      auth: 'Перевірка токена...',
+      app: 'Створення застосунку...',
+      net: 'Виділення IP-адрес...',
+      vol: 'Створення постійного тому...',
+      machine: 'Запуск машини зі Step 3.5 Flash...',
+    },
+    troubleshootingItems: {
+      sso: {
+        q: 'Не вдається створити Personal Access Token (помилка SSO)',
+        a: 'Якщо бачите: "Access Tokens cannot be created because an organization requires SSO", використайте токен організації. Запустіть у терміналі: flyctl tokens org <your-org-name>. Потім вставте згенерований токен вище.',
+      },
+      image: {
+        q: 'Розгортання не вдалося: image not found',
+        a: 'Docker image ghcr.io/librefang/librefang:latest збирається для кожного релізу. Якщо реліз ще не опубліковано, використайте terminal deploy script нижче — він збирає з джерел.',
+      },
+      llm: {
+        q: 'Як додати або змінити LLM-провайдера після розгортання?',
+        a: 'Запустіть flyctl secrets set OPENAI_API_KEY=sk-... --app your-app-name. Потім відредагуйте /data/config.toml через flyctl ssh console, щоб змінити модель за замовчуванням.',
+      },
+    },
+  },
+  changelog: {
+    title: 'Журнал змін',
+    desc: 'Відстежуйте кожне оновлення LibreFang',
+    backHome: 'Назад на головну',
+    releases: 'релізів',
+    downloads: 'завантажень',
+    loading: 'Завантаження релізів...',
+    loadError: 'Не вдалося завантажити релізи',
+    unknownError: 'Невідома помилка',
+    empty: 'Релізів не знайдено.',
+    noFilterMatches: 'Жоден реліз не відповідає поточному фільтру.',
+    fullNotes: 'Повні нотатки до релізу дивіться на GitHub.',
+    viewOnGitHub: 'Переглянути на GitHub',
+    filters: { all: 'Усі', stable: 'Стабільні', prerelease: 'Передрелізи' },
+    releaseTypes: { stable: 'Стабільний', rc: 'RC', beta: 'Бета' },
+    changeTypes: {
+      feature: 'Додано',
+      fix: 'Виправлено',
+      breaking: 'Несумісні зміни',
+      performance: 'Продуктивність',
+      other: 'Інше',
+    },
   },
   footer: { docs: 'Документація', license: 'Ліцензія', privacy: 'Приватність', changelog: 'Журнал змін' },
 }

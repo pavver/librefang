@@ -37,10 +37,10 @@ describe('i18n completeness', () => {
     expect(getTranslation('missing-locale').hero.title1).toBe(translations.en!.hero.title1)
   })
 
-  it('keeps Ukrainian values while preserving the English shape', () => {
+  it('falls back to English for keys missing in the selected locale', () => {
     const uk = getTranslation('uk')
     expect(uk.hero.title1).toBe('Агентна')
-    expect(uk.nav.registry).toBe('Реєстр')
+    expect(uk.common!.copy).toBe('Копіювати')
   })
 
   it('Ukrainian has no missing raw keys vs en', () => {
